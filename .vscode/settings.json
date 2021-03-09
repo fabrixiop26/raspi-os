@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "utils.h": "c",
+        "mini_uart.h": "c",
+        "gpio.h": "c",
+        "stdint.h": "c",
+        "chrono": "c",
+        "xhash": "c",
+        "xtree": "c",
+        "xutility": "c"
+    }
+}
