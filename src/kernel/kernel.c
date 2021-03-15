@@ -1,8 +1,8 @@
-#include "drivers/mini_uart.h"
+#include "drivers/uart.h"
 
 void kernel_main(void)
 {
-    uart_init(BAUD_REG_VAL);
+    uart_init();
     uart_send_string("Hello, world!\r\n");
 
     while (1) {
