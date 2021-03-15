@@ -12,10 +12,7 @@ _start:
     mrs    x0, mpidr_el1        
     and    x0, x0,#0xFF        // Check processor id
     cbz    x0, master        // Hang for all non-primary CPU
-    b    proc_hang
-
-proc_hang: 
-    b proc_hang
+    b    init_stack     //for the rest of cpus
 
 //clean the bss-section memezero recive bss_begin y (bss_end-bss_begin)
 //por convencion la funcion en ARMv8 recibe 7 argumentos de los registros x0-x6
@@ -25,10 +22,21 @@ master:
     adr    x1, bss_end
     sub    x1, x1, x0
     bl     memzero
-  //el kernel se carga en address 0 asi que defino el stack pointer a 4MB
-  //para que el stack no sobreescriba el kernel image
-    mov    sp, #LOW_MEMORY //iniciar el stack pointer
-    bl    kernel_main
+
+//el kernel se carga en address 0 asi que defino el stack pointer a 4MB
+//para que el stack no sobreescriba el kernel image
+init_stack:
+	mrs	x0, mpidr_el1
+	and	x0, x0,#0xFF		// get processor id again
+	mov x1, x0				// store processor id in 'x1' to preserve 'x0' when call kernel_main
+	mov x2, #0x1000			// define the stack offset in 4Kb (0x1000)
+	mul x1, x1,x2			// multiply the stack offset by processor id
+	add x1, x1,#LOW_MEMORY	// add to base address (#LOW_MEMORY)
+	mov	sp, x1
+	bl	kernel_main			// call 'kernel_main' passing processor id through 'x0'
+
+proc_hang:
+    b proc_hang
 
 //Para entender uso de registros
 //https://developer.arm.com/documentation/den0024/a/The-ABI-for-ARM-64-bit-Architecture/Register-use-in-the-AArch64-Procedure-Call-Standard/Parameters-in-general-purpose-registers
