@@ -2,6 +2,9 @@
 #define	_P_MINI_UART_H
 
 //See Section 2.1 BCM2837 Manual
+/*
+The mini UART is a secondary low throughput4 UART intended to be used as a console. It needs to be enabled before it can be used. It is also recommended that the correct GPIO function mode is selected before enabling the mini Uart.
+*/
 #include "base.h"
 
 #define AUX_ENABLES     (PBASE+0x00215004)

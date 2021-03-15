@@ -1,0 +1,7 @@
+Cuando corre kernel8.img tiene como dependecias OBJ_FILES
+que son la lista de .o tipo build/kernel/kernel.o (1) entonces como cada una 
+de esas dependencias son de tipo archivo el generic target build/%.o: src/%.c (2)
+donde % seria para (1) kernel/kernel lo cual indica que como archivo depedencia a src/kernel/kernel.c
+por lo que lo hace la instruccion y saca el archivo .o que se necesita
+
+falta entender como funciona el -include $(DEP_FILES)

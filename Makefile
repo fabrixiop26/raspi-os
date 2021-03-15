@@ -1,5 +1,5 @@
 #Especifico el compilador a usar
-ARMGNU ?= aarch64-linux-gnu
+ARMGNU ?= "C:\Users\Fabricio & Diego\Documents\FabrixioP26\UNINORTE\2021-10\SistemasOperacionales\gcc-arm-10.2-2020.11-mingw-w64-i686-aarch64-none-elf\bin\aarch64-none-elf"
 #Parametros del compilador
 #-Wall: show all warnings
 #-nostdlib: dont use C standard library, ya que esta libreria interactura con #el OS y como estamos haciendo el OS pues XD
@@ -25,9 +25,10 @@ clean :
 	rm -rf $(BUILD_DIR) *.img
 
 
-#Compila los archivos .c en archivos object _c.o $< hace referencia al filename #de input y $@ hace referencia al filename de output
+#Compila los archivos .c en archivos object .o $< hace referencia al filename #de la primera dependencia y $@ hace referencia al filename del current target
 #mkdir -p permite crear sub directories cuando no sabes si existe o no
 #-MMD crea un archivo de dependencia para cada .o, este archivo define toda las #dependencias para un archivo fuente (headers en general)
+#@D refiere a la ultima carpeta del target
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
@@ -36,18 +37,8 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.S
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
 
-#Es la unica forma que encuentro para subfolders
-#buscar forma de arreglarlo que no use recursion
-$(BUILD_DIR)/%.o: $(KERNEL_SRC)/%.c
-	mkdir -p $(@D)
-	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
-
-$(BUILD_DIR)/%.o: $(DRIVERS_SRC)/%.c
-	mkdir -p $(@D)
-	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
-
 C_FILES = $(wildcard $(SRC_DIR)/*.c)
-#extra
+#extra es necesario añadir todos los archivos fuente para que se tengan en cuenta en los target de OBJ_FILES
 C_FILES += $(wildcard $(KERNEL_SRC)/*.c)
 C_FILES += $(wildcard $(DRIVERS_SRC)/*.c)
 #finextra
