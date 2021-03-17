@@ -2,6 +2,10 @@
 #define	_P_GPIO_H
 
 #include "base.h"
+/**
+ * \file gpio.h
+ * Direcciones base para control de pines.
+*/
 
 #define GPFSEL1         (PBASE+0x00200004)
 #define GPSET0          (PBASE+0x0020001C)

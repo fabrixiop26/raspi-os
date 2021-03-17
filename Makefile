@@ -10,6 +10,9 @@ ARMGNU ?= "C:\Users\Fabricio & Diego\Documents\FabrixioP26\UNINORTE\2021-10\Sist
 COPS = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
 ASMOPS = -Iinclude
 
+#Evitar que estos targets se confundan por archivos
+.PHONY: all clean doc
+
 #Nombre de carpetas que contienen los archivos
 BUILD_DIR = build
 SRC_DIR = src
@@ -56,5 +59,10 @@ kernel8.img: $(SRC_DIR)/linker.ld $(OBJ_FILES)
 	$(ARMGNU)-ld -T $(SRC_DIR)/linker.ld -o $(BUILD_DIR)/kernel8.elf  $(OBJ_FILES)
 	$(ARMGNU)-objcopy $(BUILD_DIR)/kernel8.elf -O binary kernel8.img
 
-
+#Genera documentacion prefijo con -
+#en caso de que doxygen no este instalado y en el PATH
+#guardo el output del comando en log.txt para evitar saturacion de consola
+doc:
+	@echo "Generando docs"
+	-doxygen Doxyfile > log.txt
 #<target>: <dependecy1> <dependecy2>

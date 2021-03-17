@@ -36,6 +36,7 @@ init_stack:
 	bl	kernel_main			// call 'kernel_main' passing processor id through 'x0'
 
 proc_hang:
+	wfe
     b proc_hang
 
 //Para entender uso de registros

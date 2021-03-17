@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+		<meta name="generator" content="Doxygen 1.9.1"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Raspberry OS: Referencia del Archivo include/drivers/uart.h</title>
+		<link href="tabs.css" rel="stylesheet" type="text/css"/>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="dynsections.js"></script>
+		<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+		<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+		<link href="doxygen.css" rel="stylesheet" type="text/css" />
+		<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="custom_dark_theme.css" rel="stylesheet" type="text/css"/>
+	</head>
+	<body>
+	<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+		<div id="titlearea">
+			<table cellspacing="0" cellpadding="0">
+				<tbody>
+					<tr style="height: 56px;">
+						<td id="projectalign" style="padding-left: 0.5em;">
+							<div id="projectname">Raspberry OS
+							</div>
+							<div id="projectbrief">Sistema Operativo para raspberry pi 3</div>
+						</td>
+						<td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-- end header part --><!-- Generado por Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar','.html');
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('drivers_2uart_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Funciones</a>  </div>
+  <div class="headertitle">
+<div class="title">Referencia del Archivo uart.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Metodos para la comunicacion serial con el puerto UARTPL011.  
+<a href="#details">Más...</a></p>
+
+<p><a href="drivers_2uart_8h_source.html">Ir al código fuente de este archivo.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Funciones</h2></td></tr>
+<tr class="memitem:a0c0ca72359ddf28dcd15900dfba19343"><td class="memItemLeft" align="right" valign="top"><a id="a0c0ca72359ddf28dcd15900dfba19343"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="drivers_2uart_8h.html#a0c0ca72359ddf28dcd15900dfba19343">uart_init</a> (void)</td></tr>
+<tr class="memdesc:a0c0ca72359ddf28dcd15900dfba19343"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inicializa el dispositivo uart. <br /></td></tr>
+<tr class="separator:a0c0ca72359ddf28dcd15900dfba19343"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7b953f1cf4b2402631a0dcc8ce013f5"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="drivers_2uart_8h.html#ad7b953f1cf4b2402631a0dcc8ce013f5">uart_recv</a> (void)</td></tr>
+<tr class="memdesc:ad7b953f1cf4b2402631a0dcc8ce013f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lee el byte almacenado.  <a href="drivers_2uart_8h.html#ad7b953f1cf4b2402631a0dcc8ce013f5">Más...</a><br /></td></tr>
+<tr class="separator:ad7b953f1cf4b2402631a0dcc8ce013f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a049392fd1ae26f412718eb074ff3a8df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="drivers_2uart_8h.html#a049392fd1ae26f412718eb074ff3a8df">uart_send</a> (char c)</td></tr>
+<tr class="memdesc:a049392fd1ae26f412718eb074ff3a8df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Envia 1 byte al registro de datos.  <a href="drivers_2uart_8h.html#a049392fd1ae26f412718eb074ff3a8df">Más...</a><br /></td></tr>
+<tr class="separator:a049392fd1ae26f412718eb074ff3a8df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad97960cd0cea98fc46a3a58cd7fd6d1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="drivers_2uart_8h.html#ad97960cd0cea98fc46a3a58cd7fd6d1b">uart_send_string</a> (char *str)</td></tr>
+<tr class="memdesc:ad97960cd0cea98fc46a3a58cd7fd6d1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Envia una lista de caracteres al registro de datos.  <a href="drivers_2uart_8h.html#ad97960cd0cea98fc46a3a58cd7fd6d1b">Más...</a><br /></td></tr>
+<tr class="separator:ad97960cd0cea98fc46a3a58cd7fd6d1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descripción detallada</h2>
+<div class="textblock"><p>Metodos para la comunicacion serial con el puerto UARTPL011. </p>
+<dl class="section see"><dt>Ver también</dt><dd><a href="https://developer.arm.com/documentation/ddi0183/g/programmers-model/register-descriptions/fractional-baud-rate-register&ndash;uartfbrd">https://developer.arm.com/documentation/ddi0183/g/programmers-model/register-descriptions/fractional-baud-rate-register&amp;ndash;uartfbrd</a> </dd></dl>
+</div><h2 class="groupheader">Documentación de las funciones</h2>
+<a id="ad7b953f1cf4b2402631a0dcc8ce013f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7b953f1cf4b2402631a0dcc8ce013f5">&#9670;&nbsp;</a></span>uart_recv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char uart_recv </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Lee el byte almacenado. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>el byte almacenado en el registro de datos. </dd></dl>
+
+</div>
+</div>
+<a id="a049392fd1ae26f412718eb074ff3a8df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a049392fd1ae26f412718eb074ff3a8df">&#9670;&nbsp;</a></span>uart_send()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uart_send </td>
+          <td>(</td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Envia 1 byte al registro de datos. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>el byte a enviar. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad97960cd0cea98fc46a3a58cd7fd6d1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad97960cd0cea98fc46a3a58cd7fd6d1b">&#9670;&nbsp;</a></span>uart_send_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uart_send_string </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>str</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Envia una lista de caracteres al registro de datos. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>El buffer de caracteres a enviar. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+		<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+			<ul>
+				<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_4fe5cf12322eb0f9892753dc20f1484c.html">drivers</a></li><li class="navelem"><a class="el" href="drivers_2uart_8h.html">uart.h</a></li>
+				<li class="footer">
+					Generated on Martes, 16 de Marzo de 2021 22:33:30 for Raspberry OS by <a href="http://www.doxygen.org/index.html">
+					<img class="footer" src="doxygen.png" alt="doxygen"
+                     onerror="this.onerror=null;this.src='doxygen.svg';"/></a> 1.9.1.
+					Dark theme by <a href="http://majerle.eu" target="_new">Tilen Majerle</a>. All rights reserved.
+				</li>
+			</ul>
+		</div>
+		<script src="custom.js"></script>
+	</body>
+</html>

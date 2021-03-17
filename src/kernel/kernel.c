@@ -1,21 +1,25 @@
 #include "drivers/uart.h"
+/**
+ * \file kernel.c
+ * \brief Funciones principales del kernel
+ */
+static unsigned int semaphore = 0; ///< variable comun entre cpus para control*/
 
-//variable global para controlar el procesador
-static unsigned int semaphore = 0;
-
-//get processor id as 'char' from 'x0'
+/**
+*  Punto principal de entrada del programa.
+*  @param proc_id Identificador de la cpu
+*/
 void kernel_main(char proc_id)
 {
-    // Wait for CPU #0 to finish initalizacion of uart
+    //Wait for CPU #0 to finish initalizacion of uart
     while (proc_id != semaphore)
     {
     }
-    // only the master (processor id = 0) initialize uart
+    //only the master (processor id = 0) initialize uart
     if (proc_id == 0)
     {
         uart_init();
-        //\r mueve el "cursor al principio de la linea"
-        uart_send_string("Hello, world!\r\n");
+        uart_send_string("Hello, world!\r\n"); //\r mueve el "cursor al principio de la linea" */
     }
 
     uart_send_string("Processor #");

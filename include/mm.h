@@ -1,6 +1,11 @@
 #ifndef	_MM_H
 #define	_MM_H
 
+/**
+ * \file mm.h
+ * Funciones y constantes para el manejo de la memoria.
+ */
+
 #define PAGE_SHIFT	 		12
 #define TABLE_SHIFT 			9
 #define SECTION_SHIFT			(PAGE_SHIFT + TABLE_SHIFT)
@@ -12,7 +17,11 @@
 
 #ifndef __ASSEMBLER__
 
-//recive el src de x0 y n en x1
+/**
+ * Inicializa con 0 una seccion en memoria.
+ * @param src La direccion de origen.
+ * @param n El tamaño de la seccion a limpiar.
+ */ 
 void memzero(unsigned long src, unsigned long n);
 
 #endif
