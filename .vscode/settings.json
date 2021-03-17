@@ -8,6 +8,7 @@
         "xhash": "c",
         "xtree": "c",
         "xutility": "c",
-        "uart.h": "c"
+        "uart.h": "c",
+        "printf.h": "c"
     }
 }

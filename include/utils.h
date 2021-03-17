@@ -28,4 +28,10 @@ extern void put32 ( unsigned long reg, unsigned int data);
 */
 extern unsigned int get32 ( unsigned long reg);
 
+/**
+ * Obtiene el nivel de exepcion en el que nos encontramos.
+ * @return El nivel de expecion 
+*/
+extern int get_el ( void );
+
 #endif  /*_BOOT_H */

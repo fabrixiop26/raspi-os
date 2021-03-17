@@ -1,4 +1,6 @@
 #include "drivers/uart.h"
+#include "printf.h"
+#include "utils.h"
 /**
  * \file kernel.c
  * \brief Funciones principales del kernel
@@ -19,13 +21,16 @@ void kernel_main(char proc_id)
     if (proc_id == 0)
     {
         uart_init();
-        uart_send_string("Hello, world!\r\n"); //\r mueve el "cursor al principio de la linea" */
+        init_printf(0, putc);
+        int el = get_el();
+	    printf("Exception level: %d \r\n", el);
+        printf("Hello, world!\r\n"); //\r mueve el "cursor al principio de la linea" */
     }
 
-    uart_send_string("Processor #");
-    uart_send(proc_id + '0'); //Se contatena 0 para volverlo ascii
-    uart_send_string(" initialized");
-    uart_send_string("\r\n");
+    printf("Processor # %c initialized \r\n", (proc_id + '0'));
+    //uart_send(proc_id + '0'); //Se contatena 0 para volverlo ascii
+    //printf(" initialized");
+    //uart_send_string("\r\n");
 
     //Aumento la variable de control para que la siguiente cpu salga del bucle
     semaphore++;

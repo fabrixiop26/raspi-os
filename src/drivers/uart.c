@@ -53,3 +53,7 @@ void uart_init ( void )
 	put32(UART_LCRH, (3u << 5));                //set WLEN to 0b11 (8 bits word)
 	put32(UART_CR, (1u << 9) | (1u << 8) | 1u); // set RXE, TXE, UARTEN bits
 }
+
+void putc ( void* p, char c ){
+	uart_send(c);
+}

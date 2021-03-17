@@ -27,4 +27,11 @@ void uart_send ( char c );
  */
 void uart_send_string(char* str);
 
+/**
+ * Envina un 1 byte a la pantalla.
+ * @param p El lugar a donde enviar.
+ * @param c El byte a enviar.
+*/
+void putc ( void* p, char c );
+
 #endif  /*_UART_H */

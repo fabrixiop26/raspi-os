@@ -4,3 +4,5 @@ _build/
 
 #logs
 log.txt
+
+docs/html/
