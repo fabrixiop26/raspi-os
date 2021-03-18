@@ -9,6 +9,8 @@
         "xtree": "c",
         "xutility": "c",
         "uart.h": "c",
-        "printf.h": "c"
+        "printf.h": "c",
+        "irq.h": "c",
+        "timer.h": "c"
     }
 }

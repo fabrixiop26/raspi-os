@@ -1,6 +1,8 @@
 #include "drivers/uart.h"
+#include "drivers/irq.h"
 #include "printf.h"
 #include "utils.h"
+#include "drivers/timer.h"
 /**
  * \file kernel.c
  * \brief Funciones principales del kernel
@@ -22,6 +24,10 @@ void kernel_main(char proc_id)
     {
         uart_init();
         init_printf(0, putc);
+        irq_vector_init();
+        timer_init();
+        enable_interrupt_controller();
+        enable_irq();
         int el = get_el();
 	    printf("Exception level: %d \r\n", el);
         printf("Hello, world!\r\n"); //\r mueve el "cursor al principio de la linea" */

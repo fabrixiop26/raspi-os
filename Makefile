@@ -36,7 +36,8 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.S
+#Necesario añadir el _s como identificador para evitar que archivos .S y .c con el mismo nombre en la misma carpeta generen conflictos ej: irq.S e irq.c
+$(BUILD_DIR)/%_s.o: $(SRC_DIR)/%.S
 	mkdir -p $(@D)
 	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
 
@@ -46,8 +47,10 @@ C_FILES += $(wildcard $(KERNEL_SRC)/*.c)
 C_FILES += $(wildcard $(DRIVERS_SRC)/*.c)
 #finextra
 ASM_FILES = $(wildcard $(SRC_DIR)/*.S)
+ASM_FILES += $(wildcard $(DRIVERS_SRC)/*.S)
+
 OBJ_FILES = $(C_FILES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
-OBJ_FILES += $(ASM_FILES:$(SRC_DIR)/%.S=$(BUILD_DIR)/%.o)
+OBJ_FILES += $(ASM_FILES:$(SRC_DIR)/%.S=$(BUILD_DIR)/%_s.o)
 
 #Array de todos los archivos object usando substitution refs
 #see https://www.gnu.org/software/make/manual/html_node/Substitution-Refs.html

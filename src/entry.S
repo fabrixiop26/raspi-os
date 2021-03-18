@@ -10,10 +10,11 @@
 	.endm
 
 	.macro	ventry	label
-	.align	7
+	.align	7 //Cada exception vector debe colocarse con offset 0x80 entre ellos
 	b	\label
 	.endm
 
+	//Guarda el estado de los registros en el stack
 	.macro	kernel_entry
 	sub	sp, sp, #S_FRAME_SIZE
 	stp	x0, x1, [sp, #16 * 0]
@@ -34,6 +35,7 @@
 	str	x30, [sp, #16 * 15] 
 	.endm
 
+	//Devuelve el estado de los registros desde el stack
 	.macro	kernel_exit
 	ldp	x0, x1, [sp, #16 * 0]
 	ldp	x2, x3, [sp, #16 * 1]
