@@ -8,10 +8,10 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "husky": "^5.1.3"
+    "husky": "^4.3.8"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo -e \"Error: no test specified \" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -26,8 +26,8 @@
   "homepage": "https://github.com/fabrixiop26/raspi-os#readme",
   "husky": {
     "hooks": {
-        "pre-commit": "./commands/pre-commit",
-        "pre-push": "./commands/pre-push $HUSKY_GIT_STDIN"
+      "pre-commit": "./commands/pre-commit",
+      "pre-push": "./commands/pre-push $HUSKY_GIT_STDIN"
     }
   }
 }
