@@ -26,8 +26,10 @@ const char *entry_error_messages[] = {
 	"ERROR_INVALID_EL0_32"	
 };
 
+
 void enable_interrupt_controller()
 {
+	//Habilitamos el interrupt para el system timer match 1
 	put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1);
 }
 
@@ -41,6 +43,8 @@ void handle_irq(void)
 	//IRQ_PENDING_1 TIene el estado de las interrupciones 0 - 31
 	unsigned int irqBit = get32(IRQ_PENDING_1);
 	//Verificamos si la interupccion fue producida por el system timer
+	//Para manejar muchas interrupciones seria bueno colocar esto en un loop
+	//hasta que todo los bits sean limpiados
 	switch (irqBit) {
 		case (SYSTEM_TIMER_IRQ_1):
 			handle_timer_irq();

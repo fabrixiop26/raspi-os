@@ -1,4 +1,6 @@
 .globl irq_vector_init
+//Vector Base Address Register (vbar) le indicamos al procesador donde esta
+//ubicada el vector table
 irq_vector_init:
 	adr	x0, vectors		// load VBAR_EL1 with virtual
 	msr	vbar_el1, x0		// vector table address

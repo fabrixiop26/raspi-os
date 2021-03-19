@@ -5,7 +5,14 @@
 
 /**
  * \file irq.h
- * Define el conjunto de direcciones para el manejo de Exepciones.
+ * Define el conjunto de direcciones para el manejo de Interrupciones.
+ * Las interrupciones hacen parte de algo mas general llamdo exepciones. Hay 4 tipos de expeciones: Synchronous exception, IRQ (Interrupt Request), FIQ (Fast Interrupt Request) y SError (System Error).
+ * Synchronous exception: Son causadas por la instruccion ejecutada como cargar datos de una direccion de memoria inexsistente.
+ * IRQ (Interrupt Request): Interrupciones normales. No estan relacionadas con la instruccion ejecutada sino por hardware
+ * FIQ (Fast Interrupt Request): Su unico proposito es crear interrupciones prioritarias.
+ * SError (System Error): Generadas normalmente por hardware. Indican algun error.
+ * <br/>
+ * Cada expecion necesita alguien que la maneje y para eso utilizamos una estructura especial que contiene direcciones de todos los manejadores de expeciones llamada expetion vector
  * @note Ver Pagina 112 del BCM2837 MANUAL.
  * @warning Tener en cuenta que la tabla de interrupts de perifericos de la pagina 113 del Manual presenta un error ya que de las lineas 0 - 3 deberia contener 4 interrupciones del System Timer. Las interrupciones del timer 0 y 2
  * estan reservadas y usados por la GPU y los 1 y 3 pueden ser usados para otros propositos

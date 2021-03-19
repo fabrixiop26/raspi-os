@@ -1,8 +1,13 @@
 /build
-_build/
+/_build
 *.img
 
+/node_modules
 #logs
 log.txt
 
-docs/html/**
+#Keep docs folder
+# exclude everything
+docs/*
+# exception to the rule
+!docs/.gitkeep

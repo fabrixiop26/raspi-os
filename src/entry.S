@@ -1,5 +1,10 @@
 #include "entry.h"
 
+	//Guardamos el estado mostramos el mensaje en pantalla
+	//x0: contiene el tipo
+	//x1: cargamos la informacion de que causo una expecion del registro esr_el1 (Exception Syndrome Register)
+	//x2: cargamos la direccion que que se ejecutaba cuando la expecion fue disparada
+	//y entramos a ciclo con err_hang ya que esto no deberia haberse ejecutado
 	.macro handle_invalid_entry type
 	kernel_entry
 	mov	x0, #\type
@@ -60,6 +65,7 @@
 
 /*
  * Exception vectors.
+ * Todo lo que no debe ser ejecutado tiene un invalid
  */
 .align	11
 .globl vectors 

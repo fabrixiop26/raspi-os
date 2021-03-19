@@ -17,6 +17,7 @@
 #define TIMER_C2        (PBASE+0x00003014)
 #define TIMER_C3        (PBASE+0x00003018)
 
+//Con esto controlamos los canales de los 4 timers de 32 bits
 #define TIMER_CS_M0	(1 << 0)
 #define TIMER_CS_M1	(1 << 1)
 #define TIMER_CS_M2	(1 << 2)
