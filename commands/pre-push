@@ -1,7 +1,7 @@
 #!/bin/bash
 # Prevents force-pushing to master
 
-echo -e "===\n>> Talenavi Pre-push Hook: Checking branch name / Mengecek nama branch..."
+echo -e "===\n>> Talenavi Pre-push Hook: Checking branch name"
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`
 PROTECTED_BRANCHES="^(master)"
@@ -16,6 +16,6 @@ then
   echo -e "\n🚫 Cannot push to remote $BRANCH branch, please create your own branch and use PR." && exit 1
 fi
 
-echo -e ">> Finish checking branch name / Selesai mengecek nama branch.\n==="
+echo -e ">> Finish checking branch name\n==="
 
 exit 0
