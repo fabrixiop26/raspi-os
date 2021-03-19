@@ -26,8 +26,8 @@
   "homepage": "https://github.com/fabrixiop26/raspi-os#readme",
   "husky": {
     "hooks": {
-        "pre-commit": "./commands/pre-commit",
-        "pre-push": "./commands/pre-push $HUSKY_GIT_STDIN"
+      "pre-commit": "./commands/pre-commit",
+      "pre-push": "./commands/pre-push $HUSKY_GIT_STDIN"
     }
   }
 }
