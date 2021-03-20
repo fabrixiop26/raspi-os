@@ -24,6 +24,7 @@
 
 /// @see <a href="https://developer.arm.com/documentation/ddi0183/g/programmers-model/register-descriptions/fractional-baud-rate-register--uartfbrd?lang=en">Click aqui para entender las formulas</a>
 #define MHz *1000000
+//UARTPL011 trabaja con 48Mhz
 #define UART_CLK_HZ 48 MHz
 #define BAUDS (unsigned int)115200
 #define UART_BAUD_DIV ((double)UART_CLK_HZ) / (16 * BAUDS)

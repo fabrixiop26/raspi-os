@@ -19,6 +19,9 @@ unsigned int threshold = 0;
 } */
 
 void timer_init(void){
+	//Dirijo las interrupciones del local timer al core 0 irq,
+	//las demas cpu no tienen implementado aun IRQ
+	put32(TIMER_INTERRUPT_ROUTE, 0);
 	// Set value, enable Timer and Interrupt
 	//los bits 0:27 son los que controlan el intervalo de tiempo
 	//el local timer disminuye y se recarga solo al llegar a 0

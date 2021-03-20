@@ -29,7 +29,7 @@ void kernel_main(char proc_id)
         enable_interrupt_controller();
         enable_irq();
         int el = get_el();
-	    printf("Exception level: %d \r\n", el);
+        printf("Exception level: %d \r\n", el);
         printf("Hello, world!\r\n"); //\r mueve el "cursor al principio de la linea" */
     }
 

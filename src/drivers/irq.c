@@ -31,9 +31,13 @@ const char *entry_error_messages[] = {
 void enable_interrupt_controller()
 {
 	//Habilitamos el interrupt para el system timer match 1
-	//put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1);
+	put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1);
+}
 
-	// este no es el controlador de interrupciones, pero habilito el local timer
+void enable_interrupt_controller()
+{
+	
+	// este no es el controlador de interrupciones ya que toca depender de los registros locales de interrupciones de cada CPU, pero habilito el local timer
 	unsigned int local_timer_ctrl = get32(TIMER_CTRL);
 	put32(TIMER_CTRL, (local_timer_ctrl | (1 << 29)));
 }
@@ -44,6 +48,8 @@ void show_invalid_entry_message(int type, unsigned long esr, unsigned long addre
 }
 
 void handle_irq(void){
+//Cada cpu tiene un registro para control de interrupciones locales
+//el local timer es el bit 11
 	unsigned int irq = get32(CORE0_INT_SOURCE);
 	switch (irq) {
 		case (LOCAL_TIMER_INT):
