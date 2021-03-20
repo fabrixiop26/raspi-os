@@ -3,8 +3,9 @@
 
 /**
  * \file timer.h
- * Direcciones para control del sistem Timer.
- * @see Pagina 172 del manual BCM2837
+ * Direcciones para control del System y Local Timer.
+ * @see Pagina 172 del manual BCM2837 y para la implementacion del local timer
+ * https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2836/QA7_rev3.4.pdf seccion 4.11
 */
 
 #include "base.h"
@@ -22,5 +23,10 @@
 #define TIMER_CS_M1	(1 << 1)
 #define TIMER_CS_M2	(1 << 2)
 #define TIMER_CS_M3	(1 << 3)
+
+// Local timer registers
+#define	TIMER_CTRL		(PERIPHERAL_BASE+0x34)
+#define	TIMER_FLAG		(PERIPHERAL_BASE+0x38)
+
 
 #endif  /*_P_TIMER_H */

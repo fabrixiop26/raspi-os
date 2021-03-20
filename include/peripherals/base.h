@@ -8,4 +8,7 @@
 ///< Direccion base para MMIO
 #define PBASE 0x3F000000
 
+//Direccion de perifericos locales
+#define PERIPHERAL_BASE		0x40000000
+
 #endif  /*_P_BASE_H */
