@@ -28,11 +28,11 @@ const char *entry_error_messages[] = {
 };
 
 
-void enable_interrupt_controller()
+/* void enable_interrupt_controller()
 {
 	//Habilitamos el interrupt para el system timer match 1
 	put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1);
-}
+} */
 
 void enable_interrupt_controller()
 {
