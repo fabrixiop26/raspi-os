@@ -41,7 +41,8 @@ void kernel_main(char proc_id)
     //Aumento la variable de control para que la siguiente cpu salga del bucle
     semaphore++;
 
-    //Solo la cpu 0 tiene permitido hacer echo, los demas terminan
+    //Solo la cpu 0 tiene permitido quedarse aqui los demas terminan
+    //y se van a la linea de assembly del proc_hang
     if (proc_id == 0)
     {
         // Wait for everyone else to finish
@@ -49,9 +50,10 @@ void kernel_main(char proc_id)
         {
         }
 
+        //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto
         while (1)
         {
-            uart_send(uart_recv());
+            //uart_send(uart_recv());
         }
     }
 }

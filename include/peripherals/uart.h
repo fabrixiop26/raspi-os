@@ -22,6 +22,23 @@
 /// @see <a href="https://developer.arm.com/documentation/ddi0183/g/programmers-model/register-descriptions/control-register--uartcr?lang=en">Guia Online</a>
 #define UART_CR (UART_BASE + 0x30)
 
+//Control el nivel de fifo para los interrupts
+//los bits 5:3 controlan los tipos de fifo
+#define UART_IFLS (UART_BASE + 0x34)
+
+//interrupt mask set/clear register.
+//el bit 4 es el UARTRXINTR que es para el receive
+#define UART_IMSC (UART_BASE + 0x38)
+
+//limpia los interrupts
+//Uart interrupt pending flags el bit 4 es el UARTRXINTR que es para el receive
+#define UART_ICR (UART_BASE + 0x44)
+
+//Flags de interrupts
+//El bit que corresponde al UART receive
+#define UARTRXINTR (unsigned int)(1 << 4)
+
+
 /// @see <a href="https://developer.arm.com/documentation/ddi0183/g/programmers-model/register-descriptions/fractional-baud-rate-register--uartfbrd?lang=en">Click aqui para entender las formulas</a>
 #define MHz *1000000
 //UARTPL011 trabaja con 48Mhz
