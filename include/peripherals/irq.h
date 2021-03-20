@@ -38,4 +38,7 @@
 #define CORE0_INT_SOURCE	(PERIPHERAL_BASE+0x60)
 #define LOCAL_TIMER_INT		(1 << 11)
 
+//uart_int (57)
+#define UART_INTERRUPT (1 << 25)
+
 #endif  /*_P_IRQ_H */

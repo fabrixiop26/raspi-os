@@ -41,8 +41,8 @@ void timer_init(void){
 
 void handle_timer_irq( void ) 
 {
-	printf("Timer interrupt received, Local Timer\n\r");
-	//3 (11) el bit 30 se recarga cuando se pone en 1 el bit 30
+	//printf("Timer interrupt received, Local Timer\n\r");
+	//3 (11) se recarga cuando se pone en 1 el bit 30
 	put32(TIMER_FLAG, (3<<30));				// clear interrupt flag and reload timer
 
 }
