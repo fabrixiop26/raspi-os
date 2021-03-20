@@ -34,4 +34,8 @@
 #define SYSTEM_TIMER_IRQ_2	(1 << 2)
 #define SYSTEM_TIMER_IRQ_3	(1 << 3)
 
+//Interrupts para el local timer
+#define CORE0_INT_SOURCE	(PERIPHERAL_BASE+0x60)
+#define LOCAL_TIMER_INT		(1 << 11)
+
 #endif  /*_P_IRQ_H */

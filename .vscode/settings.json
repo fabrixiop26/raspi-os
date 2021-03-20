@@ -11,6 +11,7 @@
         "uart.h": "c",
         "printf.h": "c",
         "irq.h": "c",
-        "timer.h": "c"
+        "timer.h": "c",
+        "base.h": "c"
     }
 }

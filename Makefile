@@ -1,5 +1,5 @@
 #Especifico el compilador a usar
-ARMGNU ?= "C:\Users\Fabricio & Diego\Documents\FabrixioP26\UNINORTE\2021-10\SistemasOperacionales\gcc-arm-10.2-2020.11-mingw-w64-i686-aarch64-none-elf\bin\aarch64-none-elf"
+ARMGNU ?= "C:\Users\FabricioDiego\Documents\FabrixioP26\UNINORTE\2021-10\SistemasOperacionales\gcc-arm-10.2-2020.11-mingw-w64-i686-aarch64-none-elf\bin\aarch64-none-elf"
 #Parametros del compilador
 #-Wall: show all warnings
 #-nostdlib: dont use C standard library, ya que esta libreria interactura con #el OS y como estamos haciendo el OS pues XD
