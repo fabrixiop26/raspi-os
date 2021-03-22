@@ -73,6 +73,7 @@ void fb_init()
 void drawPixel(int x, int y, unsigned char attr)
 {
     int offs = (y * pitch) + (x * 4);
+    //escojo un color dentro del arreglo vgapal que es la paleta
     *((unsigned int *)(fb + offs)) = vgapal[attr & 0x0f];
 }
 
@@ -162,17 +163,22 @@ void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill)
 
 void drawChar(unsigned char ch, int x, int y, unsigned char attr)
 {
+    //Si el char esta en el arreglo (fila) y multiplico por el tamaño en bytes de cada "glyph e.g matrix de 8x8 que pinta" de linea (FONT_BPG)
     unsigned char *glyph = (unsigned char *)&font + (ch < FONT_NUMGLYPHS ? ch : 0) * FONT_BPG;
 
     for (int i = 0; i < FONT_HEIGHT; i++)
     {
         for (int j = 0; j < FONT_WIDTH; j++)
         {
+            //pongo un 1 en cada columna para comprar con bitwise
             unsigned char mask = 1 << j;
+            //si el gliph en esa posicion es 1 se pinta como foreground
+            //si es 0 como background
             unsigned char col = (*glyph & mask) ? attr & 0x0f : (attr & 0xf0) >> 4;
 
             drawPixel(x + j, y + i, col);
         }
+        //al puntero le sumo los bytes por linea que tiene la fuente para acceder a la siguiente "fila" del glyph que corresponde a la siguiente posicion del arreglo font
         glyph += FONT_BPL;
     }
 }

@@ -4,6 +4,9 @@
  * @see <a href="https://github.com/isometimes/rpi4-osdev/blob/master/part5-framebuffer/terminal.h">Tomado de</a>
 */
 
+#ifndef _TERMINAL_H
+#define _TERMINAL_H
+
 //Paleta de 16 colores
 unsigned int vgapal[] = {
     //Color negro
@@ -261,3 +264,5 @@ unsigned char font[FONT_NUMGLYPHS][FONT_BPG] = {
     {0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0}, // U+2590 (right half)
     {0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00}, // U+2580 (top half)
 };
+
+#endif

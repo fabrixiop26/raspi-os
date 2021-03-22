@@ -1,3 +1,6 @@
+#ifndef _MAILBOX_H
+#define _MAILBOX_H
+
 /**
  * \file mailbox.h
  * Interfaz de correo (Mailbox).
@@ -42,3 +45,5 @@ extern volatile unsigned int mbox[36];
  * @return La respuesta del mailbox. 1 para sucess 0 para error
 */
 int mbox_call(unsigned char ch);
+
+#endif

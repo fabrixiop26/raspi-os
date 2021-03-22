@@ -30,14 +30,12 @@ void kernel_main(char proc_id)
         timer_init();
         enable_interrupt_controller();
         enable_irq();
-        printf("Antes de fb_init\r\n");
-        //espera 1s?
+        printf("Iniciando framebuffer\r\n");
+        //espera 0.1s antes de inicializar el framebuffer
         wait_msec(100000);
         fb_init();
-        printf("Despues de fb_init\r\n");
         int el = get_el();
-        printf("Exception level: %d \r\n", el);
-        printf("Hello, world!\r\n"); //\r mueve el "cursor al principio de la linea" */
+        printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
     }
 
     printf("Processor # %c initialized \r\n", (proc_id + '0'));
