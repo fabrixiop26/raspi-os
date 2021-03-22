@@ -1,6 +1,9 @@
 #include "peripherals/base.h"
 #include "drivers/mailbox.h"
 #include "terminal.h"
+#include "utils.h"
+#include "printf.h"
+
 
 unsigned int width, height, pitch, isrgb;
 //apuntador al framebuffer
@@ -8,6 +11,7 @@ unsigned char *fb;
 
 void fb_init()
 {
+
     mbox[0] = 35 * 4; // Length of message in bytes
     mbox[1] = MBOX_REQUEST;
 
@@ -56,11 +60,13 @@ void fb_init()
     if (mbox_call(MBOX_CH_PROP) && mbox[20] == 32 && mbox[28] != 0)
     {
         mbox[28] &= 0x3FFFFFFF; // Convert GPU address to ARM address
-        width = mbox[10];       // Actual physical width
-        height = mbox[11];      // Actual physical height
+        width = mbox[5];       // Actual physical width
+        height = mbox[6];      // Actual physical height
         pitch = mbox[33];       // Number of bytes per line
         isrgb = mbox[24];       // Pixel order
         fb = (unsigned char *)((long)mbox[28]);
+    } else{
+        printf("No se pudo inicializar el framebuffer \r\n");
     }
 }
 

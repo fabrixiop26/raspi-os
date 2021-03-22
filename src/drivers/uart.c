@@ -4,12 +4,14 @@
 #include "printf.h"
 #include "drivers/framebuffer.h"
 
-typedef struct {
+/* typedef struct point {
 	int x;
 	int y;
 } point_t;
 
-point_t p;
+point_t p; */
+int x = 0;
+int y = 0;
 
 void uart_send(char c)
 {
@@ -38,8 +40,8 @@ void uart_send_string(char *str)
 
 void uart_init(void)
 {
-	p.x = 0;
-	p.y = 0;
+	/* p.x = 0;
+	p.y = 0; */
 	unsigned int selector;
 
 	selector = get32(GPFSEL1);
@@ -75,14 +77,14 @@ void handle_irq_uart()
 	if (c == '\r')
 	{
 		uart_send('\n');
-		p.y += 8;
-		p.x = 0;
-		drawChar(c, p.x, p.y, 0x0f);
+		y += 8;
+		x = 0;
+		drawChar(c, x, y, 0x0f);
 	}
 	else
 	{
-		drawChar(c, p.x, p.y, 0x0f);
-		p.x += 8;
+		drawChar(c, x, y, 0x0f);
+		x += 8;
 		uart_send(c);
 	}
 	//Limpio el pending iterrupt the receive uart

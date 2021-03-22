@@ -15,6 +15,19 @@
 *@param delay Cantidad de ciclos a esperar.
 */
 extern void delay ( unsigned long delay);
+
+/**
+ * Espera N microsegundos. Usando el System Timer
+ * @param n el numero de microsegundos a esperar.
+*/
+void wait_msec(unsigned int n);
+
+/**
+ * Obtiene el contador del timer de 64 bits.
+ * @return El valor del contador actual.
+*/
+unsigned long get_system_timer();
+
 /**
 *Wait for an amount of cpu cycles.
 *@param reg Direccion de memoria.
