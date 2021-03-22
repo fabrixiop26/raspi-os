@@ -3,6 +3,8 @@
 #include "printf.h"
 #include "utils.h"
 #include "drivers/timer.h"
+#include "drivers/framebuffer.h"
+#include "drivers/mailbox.h"
 /**
  * \file kernel.c
  * \brief Funciones principales del kernel
@@ -28,12 +30,15 @@ void kernel_main(char proc_id)
         timer_init();
         enable_interrupt_controller();
         enable_irq();
+        fb_init();
         int el = get_el();
         printf("Exception level: %d \r\n", el);
         printf("Hello, world!\r\n"); //\r mueve el "cursor al principio de la linea" */
     }
 
     printf("Processor # %c initialized \r\n", (proc_id + '0'));
+    drawString(100,100,"Hello world!",0x0f);
+    drawPixel(250,250,0x0e);
     //uart_send(proc_id + '0'); //Se contatena 0 para volverlo ascii
     //printf(" initialized");
     //uart_send_string("\r\n");
