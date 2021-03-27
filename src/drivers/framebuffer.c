@@ -9,9 +9,11 @@ unsigned int width, height, pitch, isrgb;
 //apuntador al framebuffer
 unsigned char *fb;
 
+//Despues de cada tag debe especificarse dos veces el length en bytes del request el cual coincide con el de la response
 void fb_init()
 {
 
+    //(x+1)*4 donde x seria el ultimo indice
     mbox[0] = 35 * 4; // Length of message in bytes
     mbox[1] = MBOX_REQUEST;
 
@@ -161,29 +163,29 @@ void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill)
     }
 }
 
-void drawChar(unsigned char ch, int x, int y, unsigned char attr)
+void drawChar(int x, int y, unsigned char ch, unsigned char attr, int zoom)
 {
-    //Si el char esta en el arreglo (fila) y multiplico por el tamaño en bytes de cada "glyph e.g matrix de 8x8 que pinta" de linea (FONT_BPG)
+    //Si el char esta en el arreglo (fila) y multiplico por el tamaño en bytes de cada "glyph e.g matrix de 8x8 que pinta" de linea (FONT_BPG) para obtener el comienzo del elemnto que es
     unsigned char *glyph = (unsigned char *)&font + (ch < FONT_NUMGLYPHS ? ch : 0) * FONT_BPG;
 
-    for (int i = 0; i < FONT_HEIGHT; i++)
+    for (int i = 1; i < (FONT_HEIGHT * zoom); i++)
     {
-        for (int j = 0; j < FONT_WIDTH; j++)
+        for (int j = 0; j < (FONT_WIDTH * zoom); j++)
         {
-            //pongo un 1 en cada columna para comprar con bitwise
-            unsigned char mask = 1 << j;
+            //pongo un 1 en cada columna para comprar con bitwise zoom veces
+            unsigned char mask = 1 << (j/zoom);
             //si el gliph en esa posicion es 1 se pinta como foreground
             //si es 0 como background
             unsigned char col = (*glyph & mask) ? attr & 0x0f : (attr & 0xf0) >> 4;
 
             drawPixel(x + j, y + i, col);
         }
-        //al puntero le sumo los bytes por linea que tiene la fuente para acceder a la siguiente "fila" del glyph que corresponde a la siguiente posicion del arreglo font
-        glyph += FONT_BPL;
+        //al puntero le sumo los bytes por linea que tiene la fuente para acceder a la siguiente "fila" del glyph que corresponde a la siguiente posicion del arreglo font solo si ya ha pasado zoom veces
+        glyph += (i % zoom) ? 0 : FONT_BPL;
     }
 }
 
-void drawString(int x, int y, char *s, unsigned char attr)
+void drawString(int x, int y, char *s, unsigned char attr, int zoom)
 {
     while (*s)
     {
@@ -194,12 +196,12 @@ void drawString(int x, int y, char *s, unsigned char attr)
         else if (*s == '\n')
         {
             x = 0;
-            y += FONT_HEIGHT;
+            y += FONT_HEIGHT * zoom;
         }
         else
         {
-            drawChar(*s, x, y, attr);
-            x += FONT_WIDTH;
+            drawChar(*s, x, y, attr, zoom);
+            x += FONT_WIDTH * zoom;
         }
         s++;
     }

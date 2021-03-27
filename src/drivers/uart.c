@@ -12,6 +12,7 @@
 point_t p; */
 int x = 0;
 int y = 0;
+int zoom = 2;
 
 void uart_send(char c)
 {
@@ -77,14 +78,14 @@ void handle_irq_uart()
 	if (c == '\r')
 	{
 		uart_send('\n');
-		y += 8;
+		y += 8 * zoom;
 		x = 0;
-		drawChar(c, x, y, 0x0f);
+		drawChar(x, y, c, 0x0f, zoom);
 	}
 	else
 	{
-		drawChar(c, x, y, 0x0f);
-		x += 8;
+		drawChar(x, y, c, 0x0f, zoom);
+		x += 8 * zoom;
 		uart_send(c);
 	}
 	//Limpio el pending iterrupt the receive uart

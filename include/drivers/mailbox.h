@@ -4,7 +4,18 @@
 /**
  * \file mailbox.h
  * Interfaz de correo (Mailbox).
+ * La forma de hacer un request en el mailbox es el siguiente:
+ * 0. size of the message in bytes, (x+1)*4.
+ * 1. MBOX_REQUEST magic value, indicates request message.
+ * 2-x. tags con sus valores.
+ * x+1. MBOX_TAG_LAST magic value, indicates no more tags,
+ * Donde cada tag debe realizarse de la siguiente manera:
+ * n+0 = tag identifier.
+ * n+1 = value buffer (response) size in bytes.
+ * n+2 = value buffer (response) size in bytes.
+ * n+.. valores del buffer
  * @see <a href="https://github.com/bztsrc/raspi3-tutorial/tree/master/04_mailboxes">Adaptado de</a>
+ * @see <a href="https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface">Mailbox Interface</a>
 */
 
 #include "peripherals/base.h"
