@@ -12,7 +12,7 @@
 point_t p; */
 int x = 0;
 int y = 0;
-int zoom = 2;
+int zoom = 1;
 
 void uart_send(char c)
 {
@@ -78,13 +78,16 @@ void handle_irq_uart()
 	if (c == '\r')
 	{
 		uart_send('\n');
-		y += 8 * zoom;
+		//Esto se volvera line height
+		y += 12 * zoom;
 		x = 0;
 		drawChar(x, y, c, 0x0f, zoom);
 	}
 	else
 	{
 		drawChar(x, y, c, 0x0f, zoom);
+		//Esto puede ser un valor no necesario de la fuente
+		//como espcaiado
 		x += 8 * zoom;
 		uart_send(c);
 	}

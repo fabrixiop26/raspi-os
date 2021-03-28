@@ -166,9 +166,9 @@ void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill)
 void drawChar(int x, int y, unsigned char ch, unsigned char attr, int zoom)
 {
     //Si el char esta en el arreglo (fila) y multiplico por el tamaño en bytes de cada "glyph e.g matrix de 8x8 que pinta" de linea (FONT_BPG) para obtener el comienzo del elemnto que es
-    unsigned char *glyph = (unsigned char *)&font + (ch < FONT_NUMGLYPHS ? ch : 0) * FONT_BPG;
+    unsigned char *glyph = (unsigned char *)&minecraft_font + (ch < FONT_NUMGLYPHS ? ch : 0) * FONT_BPG;
 
-    for (int i = 1; i < (FONT_HEIGHT * zoom); i++)
+    for (int i = 1; i <= (FONT_HEIGHT * zoom); i++)
     {
         for (int j = 0; j < (FONT_WIDTH * zoom); j++)
         {
@@ -185,6 +185,7 @@ void drawChar(int x, int y, unsigned char ch, unsigned char attr, int zoom)
     }
 }
 
+
 void drawString(int x, int y, char *s, unsigned char attr, int zoom)
 {
     while (*s)
@@ -196,7 +197,7 @@ void drawString(int x, int y, char *s, unsigned char attr, int zoom)
         else if (*s == '\n')
         {
             x = 0;
-            y += FONT_HEIGHT * zoom;
+            y += 13 * zoom;
         }
         else
         {
