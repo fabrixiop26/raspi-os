@@ -12,7 +12,7 @@
 point_t p; */
 int x = 0;
 int y = 0;
-int zoom = 1;
+int zoom = 2;
 
 void uart_send(char c)
 {
