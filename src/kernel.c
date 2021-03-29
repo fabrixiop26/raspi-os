@@ -31,8 +31,8 @@ void kernel_main(char proc_id)
         enable_interrupt_controller();
         enable_irq();
         printf("Iniciando framebuffer\r\n");
-        //espera 0.1s antes de inicializar el framebuffer
-        wait_msec(100000);
+        //espera 0.12s antes de inicializar el framebuffer
+        wait_msec(120000);
         fb_init();
         int el = get_el();
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"

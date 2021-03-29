@@ -12,7 +12,11 @@
 point_t p; */
 int x = 0;
 int y = 0;
-int zoom = 2;
+const char charWidth = 9;
+const char charHeigth = 16;
+const char lineHeight = charHeigth + 1;
+const char separation = charWidth + 1;
+int zoom = 1;
 
 void uart_send(char c)
 {
@@ -79,7 +83,7 @@ void handle_irq_uart()
 	{
 		uart_send('\n');
 		//Esto se volvera line height
-		y += 12 * zoom;
+		y += lineHeight * zoom;
 		x = 0;
 		drawChar(x, y, c, 0x0f, zoom);
 	}
@@ -87,8 +91,8 @@ void handle_irq_uart()
 	{
 		drawChar(x, y, c, 0x0f, zoom);
 		//Esto puede ser un valor no necesario de la fuente
-		//como espcaiado
-		x += 8 * zoom;
+		//como espaciado
+		x += separation * zoom;
 		uart_send(c);
 	}
 	//Limpio el pending iterrupt the receive uart
