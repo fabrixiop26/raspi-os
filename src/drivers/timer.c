@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "printf.h"
 #include "peripherals/timer.h"
+#include "kernel/scheduler.h"
 
 
 //20M
@@ -44,5 +45,6 @@ void handle_timer_irq( void )
 	//printf("Timer interrupt received, Local Timer\n\r");
 	//3 (11) se recarga cuando se pone en 1 el bit 30
 	put32(TIMER_FLAG, (3<<30));				// clear interrupt flag and reload timer
+	timer_tick();
 
 }

@@ -8,7 +8,7 @@
  * Se define un vector table que mantiene las direcciones de todos los manejadores de exepciones. Para ver la definicion ir a <a href="https://developer.arm.com/docs/ddi0487/ca/arm-architecture-reference-manual-armv8-for-armv8-a-architecture-profile">Pagina 1876 del manual Aarch64-Reference-Manual</a>
 */
 
-#define S_FRAME_SIZE			256 		// size of all saved registers 
+#define S_FRAME_SIZE			272 		// size of all saved registers 
 
 #define SYNC_INVALID_EL1t		0 
 #define IRQ_INVALID_EL1t		1 
@@ -29,5 +29,14 @@
 #define IRQ_INVALID_EL0_32		13 
 #define FIQ_INVALID_EL0_32		14 
 #define ERROR_INVALID_EL0_32		15 
+
+#ifndef __ASSEMBLER__
+
+/**
+ * Devolver la ejecucion tras un fork.
+*/
+void ret_from_fork(void);
+
+#endif
 
 #endif

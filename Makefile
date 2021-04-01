@@ -48,6 +48,7 @@ C_FILES += $(wildcard $(DRIVERS_SRC)/*.c)
 #finextra
 ASM_FILES = $(wildcard $(SRC_DIR)/*.S)
 ASM_FILES += $(wildcard $(DRIVERS_SRC)/*.S)
+ASM_FILES += $(wildcard $(KERNEL_SRC)/*.S)
 
 OBJ_FILES = $(C_FILES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 OBJ_FILES += $(ASM_FILES:$(SRC_DIR)/%.S=$(BUILD_DIR)/%_s.o)

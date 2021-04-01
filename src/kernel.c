@@ -4,12 +4,25 @@
 #include "utils.h"
 #include "drivers/timer.h"
 #include "drivers/framebuffer.h"
-#include "drivers/mailbox.h"
+#include "kernel/fork.h"
+#include "kernel/scheduler.h"
 /**
  * \file kernel.c
  * \brief Funciones principales del kernel
  */
 static unsigned int semaphore = 0; ///< variable comun entre cpus para control*/
+
+void process(char *array)
+{
+    while (1)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            uart_send(array[i]);
+            delay(100000);
+        }
+    }
+}
 
 /**
 *  Punto principal de entrada del programa.
@@ -36,7 +49,20 @@ void kernel_main(char proc_id)
         fb_init();
         int el = get_el();
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
-        drawRect(0,0,479,319, 0x0f,0);
+        drawRect(0, 0, 479, 319, 0x0f, 0);
+
+        int res = copy_process((unsigned long)&process, (unsigned long)"12345");
+        if (res != 0)
+        {
+            printf("error while starting process 1");
+            return;
+        }
+        res = copy_process((unsigned long)&process, (unsigned long)"abcde");
+        if (res != 0)
+        {
+            printf("error while starting process 2");
+            return;
+        }
     }
 
     printf("Processor # %c initialized \r\n", (proc_id + '0'));
@@ -60,6 +86,7 @@ void kernel_main(char proc_id)
         //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto
         while (1)
         {
+            schedule();
             //uart_send(uart_recv());
         }
     }

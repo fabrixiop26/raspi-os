@@ -1,6 +1,8 @@
 #ifndef	_MM_H
 #define	_MM_H
 
+#include "peripherals/base.h"
+
 /**
  * \file mm.h
  * Funciones y constantes para el manejo de la memoria.
@@ -15,6 +17,11 @@
 
 #define LOW_MEMORY              	(2 * SECTION_SIZE)
 
+#define HIGH_MEMORY             PBASE
+
+#define PAGING_MEMORY           (HIGH_MEMORY - LOW_MEMORY)
+#define PAGING_PAGES            (PAGING_MEMORY/PAGE_SIZE)
+
 #ifndef __ASSEMBLER__
 
 /**
@@ -23,6 +30,8 @@
  * @param n El tamaño de la seccion a limpiar.
  */ 
 void memzero(unsigned long src, unsigned long n);
+unsigned long get_free_page();
+void free_page(unsigned long p);
 
 #endif
 
