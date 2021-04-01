@@ -12,6 +12,8 @@
         "printf.h": "c",
         "irq.h": "c",
         "timer.h": "c",
-        "base.h": "c"
+        "base.h": "c",
+        "framebuffer.h": "c",
+        "xiosbase": "c"
     }
 }

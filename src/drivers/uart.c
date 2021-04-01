@@ -2,6 +2,21 @@
 #include "peripherals/uart.h"
 #include "peripherals/gpio.h"
 #include "printf.h"
+#include "drivers/framebuffer.h"
+
+/* typedef struct point {
+	int x;
+	int y;
+} point_t;
+
+point_t p; */
+int x = 0;
+int y = 0;
+const char charWidth = 9;
+const char charHeigth = 16;
+const char lineHeight = charHeigth + 1;
+const char separation = charWidth + 1;
+int zoom = 1;
 
 void uart_send(char c)
 {
@@ -30,6 +45,8 @@ void uart_send_string(char *str)
 
 void uart_init(void)
 {
+	/* p.x = 0;
+	p.y = 0; */
 	unsigned int selector;
 
 	selector = get32(GPFSEL1);
@@ -65,10 +82,17 @@ void handle_irq_uart()
 	if (c == '\r')
 	{
 		uart_send('\n');
+		//Esto se volvera line height
+		y += lineHeight * zoom;
+		x = 0;
+		drawChar(x, y, c, 0x0f, zoom);
 	}
 	else
 	{
-
+		drawChar(x, y, c, 0x0f, zoom);
+		//Esto puede ser un valor no necesario de la fuente
+		//como espaciado
+		x += separation * zoom;
 		uart_send(c);
 	}
 	//Limpio el pending iterrupt the receive uart

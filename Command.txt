@@ -2,3 +2,14 @@
 qemu-system-aarch64 -m 1024 -M raspi3 -serial null -serial stdio -kernel kernel8.img
 #Si usamos uartpl011 (uart0)
 qemu-system-aarch64 -m 1024 -M raspi3 -serial stdio -kernel build/kernel8.elf
+
+
+#Framebuffers tutorials
+https://github.com/dwelch67/raspberrypi/blob/master/video01/video01.c
+https://github.com/brianwiddas/pi-baremetal/blob/master/framebuffer.c
+https://github.com/PeterLemon/RaspberryPi/blob/master/HelloWorld/CPU/kernel8.asm
+https://github.com/BrianSidebotham/arm-tutorial-rpi/blob/master/part-5/armc-014/armc-014.c
+
+
+#Explicacion mailbox
+http://magicsmoke.co.za/?p=284
