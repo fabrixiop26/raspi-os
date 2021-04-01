@@ -4,7 +4,7 @@
 #include "kernel/scheduler.h"
 
 
-//20M
+//20M (c.a 1s)
 const unsigned int interval = 20000000;
 unsigned int threshold = 0;
 
@@ -21,7 +21,7 @@ unsigned int threshold = 0;
 
 void timer_init(void){
 	//Dirijo las interrupciones del local timer al core 0 irq,
-	//las demas cpu no tienen implementado aun IRQ
+	//las demas cpu no tienen implementado aun IRQ (4 safety)
 	put32(TIMER_INTERRUPT_ROUTE, 0);
 	// Set value, enable Timer and Interrupt
 	//los bits 0:27 son los que controlan el intervalo de tiempo
@@ -44,8 +44,7 @@ void handle_timer_irq( void )
 {
 	//printf("Timer interrupt received, Local Timer\n\r");
 	//3 (11) se recarga cuando se pone en 1 el bit 30
-	put32(TIMER_FLAG, (1<<31));				// clear interrupt flag and reload timer
+	put32(TIMER_FLAG, (3<<30));				// clear interrupt flag and reload timer
 	//Controlo cada cuantas interrupciones un proceso puede correr
-	printf("Timer tick \r\n");
-	//timer_tick();
+	timer_tick();
 }

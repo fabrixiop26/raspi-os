@@ -14,13 +14,16 @@ static unsigned int semaphore = 0; ///< variable comun entre cpus para control*/
 
 void process(char *array)
 {
-    while (1)
+    int cont = 200;
+    while (cont >= 0)
     {
         for (int i = 0; i < 5; i++)
         {
             uart_send(array[i]);
             delay(100000);
         }
+
+        cont--;
     }
 }
 
@@ -51,7 +54,7 @@ void kernel_main(char proc_id)
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
 
         //Pasamos la funcion que quieremos copiar y los argumentos
-       /*  int res = copy_process((unsigned long)&process, (unsigned long)"12345");
+        int res = copy_process((unsigned long)&process, (unsigned long)"12345");
         if (res != 0)
         {
             printf("error while starting process 1");
@@ -62,7 +65,7 @@ void kernel_main(char proc_id)
         {
             printf("error while starting process 2");
             return;
-        } */
+        }
     }
 
     //printf("Processor # %c initialized \r\n", (proc_id + '0'));
