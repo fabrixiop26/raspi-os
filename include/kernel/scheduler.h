@@ -14,8 +14,17 @@
 
 #define TASK_RUNNING				0
 
+/**
+ * El proceso que se esta ejecutando.
+*/
 extern struct task_struct *current;
+/**
+ * Arreglo con la lista de procesos.
+*/
 extern struct task_struct * task[NR_TASKS];
+/**
+ * Numero de procesos ejecutandose en el sistema
+*/
 extern int nr_tasks;
 
 /**

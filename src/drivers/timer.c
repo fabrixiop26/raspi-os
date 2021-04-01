@@ -44,7 +44,8 @@ void handle_timer_irq( void )
 {
 	//printf("Timer interrupt received, Local Timer\n\r");
 	//3 (11) se recarga cuando se pone en 1 el bit 30
-	put32(TIMER_FLAG, (3<<30));				// clear interrupt flag and reload timer
-	timer_tick();
-
+	put32(TIMER_FLAG, (1<<31));				// clear interrupt flag and reload timer
+	//Controlo cada cuantas interrupciones un proceso puede correr
+	printf("Timer tick \r\n");
+	//timer_tick();
 }

@@ -43,15 +43,15 @@ void kernel_main(char proc_id)
         timer_init();
         enable_interrupt_controller();
         enable_irq();
-        printf("Iniciando framebuffer\r\n");
+        //printf("Iniciando framebuffer\r\n");
         //espera 0.12s antes de inicializar el framebuffer
-        wait_msec(120000);
-        fb_init();
+        //wait_msec(120000);
+        //fb_init();
         int el = get_el();
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
-        drawRect(0, 0, 479, 319, 0x0f, 0);
 
-        int res = copy_process((unsigned long)&process, (unsigned long)"12345");
+        //Pasamos la funcion que quieremos copiar y los argumentos
+       /*  int res = copy_process((unsigned long)&process, (unsigned long)"12345");
         if (res != 0)
         {
             printf("error while starting process 1");
@@ -62,14 +62,10 @@ void kernel_main(char proc_id)
         {
             printf("error while starting process 2");
             return;
-        }
+        } */
     }
 
-    printf("Processor # %c initialized \r\n", (proc_id + '0'));
-    //drawString(0,0,"Hello world!",0x0f);
-    //uart_send(proc_id + '0'); //Se contatena 0 para volverlo ascii
-    //printf(" initialized");
-    //uart_send_string("\r\n");
+    //printf("Processor # %c initialized \r\n", (proc_id + '0'));
 
     //Aumento la variable de control para que la siguiente cpu salga del bucle
     semaphore++;
@@ -86,7 +82,7 @@ void kernel_main(char proc_id)
         //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto
         while (1)
         {
-            schedule();
+            //schedule();
             //uart_send(uart_recv());
         }
     }

@@ -17,9 +17,10 @@ void preempt_enable(void)
 	current->preempt_count--;
 }
 
-
+//Verifico si hay un nuevo proceso que debe adelantarse al que se este ejecutando en el momento
 void _schedule(void)
 {
+	//Esta funcion es una seccion critica y no debe ser interrumpida
 	preempt_disable();
 	int next,c;
 	struct task_struct * p;
@@ -69,10 +70,12 @@ void schedule_tail(void) {
 
 void timer_tick()
 {
-	--current->counter;
+	--current->counter; //Disminuyo el counter
+	//En caso de que aun no sea 0 de que este en seccion critica no hago nada
 	if (current->counter>0 || current->preempt_count >0) {
 		return;
 	}
+	//me aseguro que el counter sea 0  y vuelvo a programar el scheduler
 	current->counter=0;
 	enable_irq();
 	_schedule();
