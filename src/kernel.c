@@ -36,6 +36,7 @@ void kernel_main(char proc_id)
         fb_init();
         int el = get_el();
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
+        drawRect(0,0,479,319, 0x0f,0);
     }
 
     printf("Processor # %c initialized \r\n", (proc_id + '0'));
