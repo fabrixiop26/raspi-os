@@ -3,7 +3,7 @@
 
 /**
  * \file fork.h
- * Metodos para el manejo de procesos.
+ * Metodos para la creacion de procesos.
  */
 
 /**

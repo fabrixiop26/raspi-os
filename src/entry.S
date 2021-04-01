@@ -38,6 +38,7 @@
 	stp	x26, x27, [sp, #16 * 13]
 	stp	x28, x29, [sp, #16 * 14]
 
+	//Es necensario guardar esto ahora ya que despues de un interrupt puede seguirle otro proceso diferente
 	mrs	x22, elr_el1
 	mrs	x23, spsr_el1
 
@@ -49,7 +50,7 @@
 	.macro	kernel_exit
 	ldr	x23, [sp, #16 * 16]
 	ldp	x30, x22, [sp, #16 * 15] 
-
+	//Es necensario cargar esto ahora ya que despues de un interrupt puede seguirle otro proceso diferente
 	msr	elr_el1, x22			
 	msr	spsr_el1, x23
 
@@ -152,8 +153,9 @@ el1_irq:
 
 .globl ret_from_fork
 ret_from_fork:
-	bl	schedule_tail
-	mov	x0, x20
+	bl	schedule_tail //lama a schedule tail (enabled preempt)
+	mov	x0, x20 //cargo a x0 lo que esta en x20 (los arg al llamar a copy_process)
+	//llama a la funcion guardada en x19
 	blr	x19 		//should never return
 
 .globl err_hang

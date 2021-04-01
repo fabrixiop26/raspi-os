@@ -5,7 +5,7 @@
 
 
 //20M (c.a 1s)
-const unsigned int interval = 20000000;
+const unsigned int interval = 200000;
 unsigned int threshold = 0;
 
 /* void timer_init ( void )
@@ -46,5 +46,6 @@ void handle_timer_irq( void )
 	//3 (11) se recarga cuando se pone en 1 el bit 30
 	put32(TIMER_FLAG, (3<<30));				// clear interrupt flag and reload timer
 	//Controlo cada cuantas interrupciones un proceso puede correr
+	//aka aviso al scheduler que un "quantum ha pasado"
 	timer_tick();
 }
