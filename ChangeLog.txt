@@ -3,3 +3,5 @@ Para hacer el .img compatible con qemu
 -Debo cambiar el codigo de boot.S para que sea el2 y no lo de el3.
 -Tambien para el multiboot tengo que agregar el codigo del tipo
 en el issue de github con el wakeup_core
+
+-Mudarme a generic timer en caso de errores futuros de IRQ Invalid

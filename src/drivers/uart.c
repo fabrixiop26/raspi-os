@@ -45,8 +45,6 @@ void uart_send_string(char *str)
 
 void uart_init(void)
 {
-	/* p.x = 0;
-	p.y = 0; */
 	unsigned int selector;
 
 	selector = get32(GPFSEL1);
@@ -70,7 +68,7 @@ void uart_init(void)
 	put32(UART_FBRD, FBRD);
 	put32(UART_IMSC, UARTRXINTR);				//activo el flag para los interrupts del receive
 	put32(UART_LCRH, (3u << 5) | (0 << 4));		//set WLEN to 0b11 (8 bits word) y activa las fifos
-	put32(UART_IFLS, (0 << 3));					//hago que el receive fifo sea 1/8 full al parecer ese no daña
+	put32(UART_IFLS, (0 << 3));					//evito el uso de fifos
 	put32(UART_CR, (1u << 9) | (1u << 8) | 1u); // set RXE, TXE, UARTEN bits
 }
 

@@ -60,6 +60,7 @@ void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill);
  * @param y1 la posicion en X del comienzo de la linea.
  * @param x2 la posicion en X del fin de la linea.
  * @param y2 la posicion en X del fin de la linea.
+ @param attr 8 bits de configuracion de color. Los ultimos 4 bits el color del outline, los primeros 4 bits el color del relleno.
 */
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr);
 

@@ -1,6 +1,6 @@
 /**
  * \file terminal.h
- * Definiciones para el manejo de pixeles..
+ * Definiciones para el manejo de pixeles para la terminal.
  * @see <a href="https://github.com/isometimes/rpi4-osdev/blob/master/part5-framebuffer/terminal.h">Tomado de</a>
 */
 

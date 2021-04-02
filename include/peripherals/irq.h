@@ -35,6 +35,7 @@
 #define SYSTEM_TIMER_IRQ_3	(1 << 3)
 
 //Interrupts para el local timer
+#define CORE0_INT_CTR		(PERIPHERAL_BASE+0x40)
 #define CORE0_INT_SOURCE	(PERIPHERAL_BASE+0x60)
 #define LOCAL_TIMER_INT		(1 << 11)
 

@@ -25,7 +25,7 @@ const char *entry_error_messages[] = {
 	"SYNC_INVALID_EL0_32",		
 	"IRQ_INVALID_EL0_32",		
 	"FIQ_INVALID_EL0_32",		
-	"ERROR_INVALID_EL0_32"	
+	"ERROR_INVALID_EL0_32"		
 };
 
 
@@ -40,10 +40,13 @@ void enable_interrupt_controller()
 	
 	// este no es el controlador de interrupciones ya que toca depender de los registros locales de interrupciones de cada CPU, pero habilito el local timer
 	unsigned int local_timer_ctrl = get32(TIMER_CTRL);
+	//Enable IRQ Core 0 - Pag. 13 BCM2836_ARM-local_peripherals
+	//put32(CORE0_INT_CTR, (1 << 1));
+	//Habilito el local timer
 	put32(TIMER_CTRL, (local_timer_ctrl | (1 << 29)));
 	
 	//Configurar el enable de uart int segun tabla pagina 113 del manual
-	put32(ENABLE_IRQS_2, UART_INTERRUPT);
+	//put32(ENABLE_IRQS_2, UART_INTERRUPT);
 
 }
 
