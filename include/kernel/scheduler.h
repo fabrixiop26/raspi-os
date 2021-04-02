@@ -12,10 +12,10 @@
 
 #define THREAD_SIZE				4096 //4Kb
 
-#define NR_TASKS				64
+//#define NR_TASKS				64 sistema estatico
 
-#define FIRST_TASK task[0]
-#define LAST_TASK task[NR_TASKS-1]
+//#define FIRST_TASK task[0] sistema estatico
+//#define LAST_TASK task[NR_TASKS-1] sistema estatico
 
 #define TASK_RUNNING				0
 
@@ -24,13 +24,18 @@
 */
 extern struct task_struct *current;
 /**
+ * El proceso padre de todos (OS).
+*/
+extern struct task_struct *initial_task;
+/**
  * Arreglo con la lista de procesos.
 */
-extern struct task_struct * task[NR_TASKS];
+//extern struct task_struct * task[NR_TASKS];
 /**
- * Numero de procesos ejecutandose en el sistema
+ * Numero de procesos ejecutandose en el sistema.
 */
-extern int nr_tasks;
+//extern int nr_tasks;
+extern int current_pages;
 
 /**
  * @struct cpu_context
@@ -67,6 +72,8 @@ struct cpu_context {
  Prioridad del proceso.
  @var task_struct::preempt_count 
  Controla secciones criticas (Non-Zero Value)
+ @var task_strcut::next_task
+ Apunta al siguiente proceso en memoria
 */
 struct task_struct {
 	struct cpu_context cpu_context;
@@ -74,6 +81,7 @@ struct task_struct {
 	long counter;
 	long priority;
 	long preempt_count;
+	struct task_struct *next_task;
 };
 
 
@@ -107,7 +115,7 @@ void print_task_info(struct task_struct* t, int pid);
 
 #define INIT_TASK \
 /*cpu_context*/	{ {0,0,0,0,0,0,0,0,0,0,0,0,0}, \
-/* state etc */	0,0,1, 0 \
+/* state etc */	0,0,1, 0,0 \
 }
 
 #endif
