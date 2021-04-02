@@ -17,7 +17,10 @@
 //#define FIRST_TASK task[0] sistema estatico
 //#define LAST_TASK task[NR_TASKS-1] sistema estatico
 
-#define TASK_RUNNING				0
+#define TASK_RUNNING			0
+#define TASK_ZOMBIE				1
+
+#define PF_KTHREAD		        0x00000002
 
 /**
  * El proceso que se esta ejecutando.
@@ -34,7 +37,10 @@ extern struct task_struct *initial_task;
 /**
  * Numero de procesos ejecutandose en el sistema.
 */
-//extern int nr_tasks;
+extern int nr_tasks;
+/**
+ * Numero de paginas ocupadas en la memoria.
+*/
 extern int current_pages;
 
 /**
@@ -81,6 +87,8 @@ struct task_struct {
 	long counter;
 	long priority;
 	long preempt_count;
+	unsigned long stack;
+	unsigned long flags;
 	struct task_struct *next_task;
 };
 
@@ -110,12 +118,16 @@ extern void switch_to(struct task_struct* next);
  * Realiza el cambio de contexto entre 2 procesos.
 */
 extern void cpu_switch_to(struct task_struct* prev, struct task_struct* next);
+/**
+ * Termina un proceso.
+*/
+extern void exit_process(void);
 
 void print_task_info(struct task_struct* t, int pid);
 
 #define INIT_TASK \
 /*cpu_context*/	{ {0,0,0,0,0,0,0,0,0,0,0,0,0}, \
-/* state etc */	0,0,1, 0,0 \
+/* state etc */	0,0,1, 0,0,PF_KTHREAD,0 \
 }
 
 #endif

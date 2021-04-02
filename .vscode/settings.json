@@ -16,6 +16,7 @@
         "framebuffer.h": "c",
         "xiosbase": "c",
         "scheduler.h": "c",
-        "mm.h": "c"
+        "mm.h": "c",
+        "fork.h": "c"
     }
 }
