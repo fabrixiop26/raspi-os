@@ -1,5 +1,16 @@
 #include "kernel/scheduler.h"
 
+
+/*
+dudas
+stp	x19, x20, [x8], #16 
+
+*(x8) <- x19
+*(x8+8) <- x20
+x8 <- x8 + 16
+
+*/
+
 .globl cpu_switch_to
 cpu_switch_to:
 	mov	x10, #THREAD_CPU_CONTEXT
@@ -11,7 +22,7 @@ cpu_switch_to:
 	stp	x25, x26, [x8], #16
 	stp	x27, x28, [x8], #16
 	stp	x29, x9, [x8], #16 //frame pointer (x29)
-	str	x30, [x8]		//link register (x30) contiene function return address se guarda como pc (se guarda en la direccion que tenga x8)
+	str	x30, [x8]		//link register (x30) contiene function return address se guarda como pc (se guarda en la direccion que tenga x8 que aca sera que coincida con pc del struct)
 	add	x8, x1, x10 //x1 contiene sigueinte proceso y se guarda ahora en x8
 	ldp	x19, x20, [x8], #16		// restore callee-saved registers
 	ldp	x21, x22, [x8], #16

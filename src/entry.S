@@ -19,6 +19,12 @@
 	b	\label
 	.endm
 
+	/*
+	stp	x0, x1, [sp, #16]
+	*(sp+16) <- x0
+	*(sp+24) <- x1
+	 */
+
 	//Guarda el estado de los registros en el stack
 	.macro	kernel_entry
 	sub	sp, sp, #S_FRAME_SIZE

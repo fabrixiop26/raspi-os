@@ -85,7 +85,7 @@ void kernel_main(char proc_id)
         //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto
         while (1)
         {
-            //schedule();
+            schedule();
             //uart_send(uart_recv());
         }
     }
