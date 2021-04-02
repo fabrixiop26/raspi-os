@@ -54,13 +54,13 @@ void kernel_main(char proc_id)
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
 
         //Pasamos la funcion que quieremos copiar y los argumentos
-        int res = copy_process((unsigned long)&process, (unsigned long)"12345");
+        int res = copy_process((unsigned long)&process, (unsigned long)"12345", 1);
         if (res != 0)
         {
             printf("error while starting process 1");
             return;
         }
-        res = copy_process((unsigned long)&process, (unsigned long)"abcde");
+        res = copy_process((unsigned long)&process, (unsigned long)"abcde", 1);
         if (res != 0)
         {
             printf("error while starting process 2");

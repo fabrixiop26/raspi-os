@@ -6,7 +6,10 @@ static struct task_struct init_task = INIT_TASK;
 struct task_struct *current = &(init_task);
 //Esto es posible porque hay mucho mas espacio en realidad que el de 64
 struct task_struct * task[NR_TASKS] = {&(init_task), };
+
 int nr_tasks = 1;
+int current_task_pid = 0;
+int next_task_pid = 0;
 
 void preempt_disable(void)
 {
@@ -52,6 +55,8 @@ void _schedule(void)
 		//repetimos hasta encontrar algo que haga el break
 	}
 	//La primera vez retornaara de ret_form_fork en los demas casos sera la direccion guardada en cpu_context por esta misma funcion
+	current_task_pid = next_task_pid;
+	next_task_pid = next;
 	switch_to(task[next]);
 	preempt_enable();
 }
@@ -64,17 +69,37 @@ void schedule(void)
 
 void switch_to(struct task_struct * next) 
 {
+	/* for(int t=0; t < nr_tasks; t++) {
+		p = task[t];
+		printf("\n\rtask[%d] counter = %d\n\r", t, p->counter);
+		printf("task[%d] priority = %d\n\r", t, p->priority);
+		printf("task[%d] preempt_count = %d\n\r", t, p->preempt_count);
+		printf("task[%d] sp = 0x%08x\n\r", t, p->cpu_context.sp);
+		printf("\n\r###################################\r\n");
+	} */
+	
 	if (current == next) 
 		return;
 	//Si no es la misma pued guardamos la actual como la anterior y la actual sera la siguiente
 	struct task_struct * prev = current;
 	current = next;
+	printf("\n\r\n\r######## - Task switch - #########\r\n");
+	printf("Current Task -> ");
+	print_task_info(prev, current_task_pid);
+	printf("New Task -> ");
+	print_task_info(next, next_task_pid);
+	printf("\n\r###################################\r\n");	
+	printf("\n\rCurrent task output: ");
 	//Context switch
 	cpu_switch_to(prev, next);
 }
 
 void schedule_tail(void) {
 	preempt_enable();
+}
+
+void print_task_info(struct task_struct * t, int pid){
+	printf("PID: %d, Counter: %d, Priority: %d, Preempt_count: %d, Sp: 0x%08x \r\n", pid, t->counter, t->priority, t->preempt_count, t->cpu_context.sp);
 }
 
 

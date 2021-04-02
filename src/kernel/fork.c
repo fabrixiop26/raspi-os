@@ -1,9 +1,10 @@
 #include "mm.h"
 #include "kernel/scheduler.h"
 #include "entry.h"
+#include "printf.h"
 
 //no crea cambios de contexto solo prepara el nuevo proceso
-int copy_process(unsigned long fn, unsigned long arg)
+int copy_process(unsigned long fn, unsigned long arg, unsigned int priority)
 {
 	//Evitamos que el scheduler nos saque de aqui y asignamos su espacio de memoria al nuevo proceso que se usara como su stack
 	preempt_disable();
@@ -13,7 +14,7 @@ int copy_process(unsigned long fn, unsigned long arg)
 	if (!p)
 		return 1;
 	//Mantemeos la misma prioridad
-	p->priority = current->priority;
+	p->priority = priority;
 	p->state = TASK_RUNNING;
 	//Asignamos el numero de quantums del nuevo proceso basado en la prioridad
 	//Mayor prioridad = mayor tiempo en cpu
@@ -28,6 +29,14 @@ int copy_process(unsigned long fn, unsigned long arg)
 	p->cpu_context.sp = (unsigned long)p + THREAD_SIZE;
 	int pid = nr_tasks++;
 	task[pid] = p;	
+
+	printf("\n\r----------- Task[%d] created -----------\r\n", pid);
+	printf("\n\rStruct task allocated at 0x%08x.\r\n", p);
+	printf("p->cpu_context.x19 = 0x%08x. (fn)\r\n", p->cpu_context.x19);
+	printf("p->cpu_context.x20 = 0x%08x. (arg)\r\n", p->cpu_context.x20);
+	printf("p->cpu_context.pc  = 0x%08x. (ret_from_fork)\r\n", p->cpu_context.pc);
+	printf("p->cpu_context.sp  = 0x%08x. (sp)\r\n", p->cpu_context.sp);
+
 	preempt_enable();
 	return 0;
 }

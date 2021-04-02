@@ -9,9 +9,10 @@
 /**
  * Crea un nuevo proceso.
  Aloja espacio para un nuevo proceso y lo vuelve disponible para el scheduler
- @param fn la funcion a copiar.
- @param arg los argumentos de la funcion.
+ @param fn La funcion a copiar.
+ @param arg Los argumentos de la funcion.
+ @param priority La prioridad del proceso.
 */
-int copy_process(unsigned long fn, unsigned long arg);
+int copy_process(unsigned long fn, unsigned long arg, unsigned int priority);
 
 #endif

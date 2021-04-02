@@ -103,6 +103,8 @@ extern void switch_to(struct task_struct* next);
 */
 extern void cpu_switch_to(struct task_struct* prev, struct task_struct* next);
 
+void print_task_info(struct task_struct* t, int pid);
+
 #define INIT_TASK \
 /*cpu_context*/	{ {0,0,0,0,0,0,0,0,0,0,0,0,0}, \
 /* state etc */	0,0,1, 0 \
