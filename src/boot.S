@@ -13,7 +13,7 @@ _start:
     mrs    x0, mpidr_el1        
     and    x0, x0,#0xFF        // Check processor id
     cbz    x0, master        // Hang for all non-primary CPU
-    b    init_stack     //for the rest of cpus inicializa su stack y salta a kernel_main
+    b      init_stack     //for the rest of cpus inicializa su stack y salta a kernel_main
 
 //clean the bss-section memezero recive bss_begin y (bss_end-bss_begin)
 //por convencion la funcion en ARMv8 recibe 7 argumentos de los registros x0-x6

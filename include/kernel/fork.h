@@ -25,7 +25,7 @@
  @param arg Los argumentos de la funcion.
  @param priority La prioridad del proceso.
 */
-int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, unsigned long stack,unsigned int priority);
+int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, unsigned long stack);
 /**
  * Movemos la ejecucion a modo usuario.
  * @param pc El punto al cual retornar.

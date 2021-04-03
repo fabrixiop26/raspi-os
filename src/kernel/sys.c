@@ -8,7 +8,7 @@ void sys_write(char * buf){
 }
 
 int sys_clone(unsigned long stack){
-	return copy_process(0, 0, 0, stack, 1);
+	return copy_process(0, 0, 0, stack);
 }
 
 unsigned long sys_malloc(){

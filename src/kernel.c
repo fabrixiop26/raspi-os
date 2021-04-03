@@ -15,7 +15,8 @@ static unsigned int semaphore = 0; ///< variable comun entre cpus para control*/
 void user_process1(char *array)
 {
     char buf[2] = {0};
-    while (1)
+    int cont = 200;
+    while (cont >= 0)
     {
         for (int i = 0; i < 5; i++)
         {
@@ -23,11 +24,14 @@ void user_process1(char *array)
             call_sys_write(buf);
             delay(100000);
         }
+        cont--;
     }
 }
 
 void user_process()
 {
+    //El equivalente a sprintf
+    //el buffer debe tener tamaño indicado
     char buf[30] = {0};
     tfp_sprintf(buf, "User process started\n\r");
     call_sys_write(buf);
@@ -58,6 +62,7 @@ void user_process()
     call_sys_exit();
 }
 
+//Creo el proceso en el kernel y el mismo se encarga de pasarme a user mode
 void kernel_process()
 {
     printf("Kernel process started. EL %d\r\n", get_el());
@@ -91,23 +96,9 @@ void kernel_main(char proc_id)
         //espera 0.12s antes de inicializar el framebuffer
         //wait_msec(120000);
         //fb_init();
-        int el = get_el();
-        printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
-
-        int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process,0,0, 1);
-        if (res < 0)
-        {
-            printf("error while starting kernel process");
-            return;
-        }
-
-        while (1)
-        {
-            schedule();
-        }
     }
 
-    //printf("Processor # %c initialized \r\n", (proc_id + '0'));
+    printf("Processor # %c initialized \r\n", (proc_id + '0'));
 
     //Aumento la variable de control para que la siguiente cpu salga del bucle
     semaphore++;
@@ -119,6 +110,15 @@ void kernel_main(char proc_id)
         // Wait for everyone else to finish
         while (semaphore != 4)
         {
+        }
+        int el = get_el();
+        printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
+
+        int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process,0,0);
+        if (res < 0)
+        {
+            printf("Error while starting kernel process");
+            return;
         }
 
         //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto

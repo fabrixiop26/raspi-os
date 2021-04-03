@@ -46,6 +46,7 @@
 	stp	x26, x27, [sp, #16 * 13]
 	stp	x28, x29, [sp, #16 * 14]
 
+	//si estamos en user mode cargamos en x21 el valor del stack sino simplemente asignamos de vuelta donde estaba
 	.if	\el == 0
 	mrs	x21, sp_el0
 	.else
@@ -173,11 +174,12 @@ el0_irq:
 	bl	handle_irq
 	kernel_exit 0
 
+//entramos en kernel entry y verificamos que la interrupccion fuese generada por svc sino es un error
 el0_sync:
 	kernel_entry 0
 	mrs	x25, esr_el1				// read the syndrome register
 	lsr	x24, x25, #ESR_ELx_EC_SHIFT		// exception class
-	cmp	x24, #ESR_ELx_EC_SVC64			// SVC in 64-bit state
+	cmp	x24, #ESR_ELx_EC_SVC64			// SVC in 64-bit state 
 	b.eq	el0_svc
 	handle_invalid_entry 0, SYNC_ERROR
 
@@ -200,6 +202,7 @@ el0_svc:
 ni_sys:
 	handle_invalid_entry 0, SYSCALL_ERROR
 
+//X0 contiene el valor del retorno del syscalls y debemos pasarlo al irnos al user mode
 ret_from_syscall:
 	bl	disable_irq				
 	str	x0, [sp, #S_X0]				// returned x0
@@ -208,6 +211,7 @@ ret_from_syscall:
 .globl ret_from_fork
 ret_from_fork:
 	bl	schedule_tail //lama a schedule tail (enabled preempt)
+	cbz   x19, ret_to_user
 	mov	x0, x20 //cargo a x0 lo que esta en x20 (los arg al llamar a copy_process)
 	//llama a la funcion guardada en x19
 	blr	x19 		//should never return
