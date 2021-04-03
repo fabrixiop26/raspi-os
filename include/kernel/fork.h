@@ -28,7 +28,7 @@
 int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, unsigned long stack);
 /**
  * Movemos la ejecucion a modo usuario.
- * @param pc El punto al cual retornar.
+ * @param pc La funcion en la cual empezar desde user mode
 */
 int move_to_user_mode(unsigned long pc);
 

@@ -46,7 +46,7 @@
 	stp	x26, x27, [sp, #16 * 13]
 	stp	x28, x29, [sp, #16 * 14]
 
-	//si estamos en user mode cargamos en x21 el valor del stack sino simplemente asignamos de vuelta donde estaba
+	//si estamos en user mode cargamos en x21 el valor del stack sino simplemente asignamos guardamos en x21 el espacio que se reservaria para el stack (como a priori lo reducimos para guardar el add apuntara a la suma). Es necesario guardar sp_el0 si estamos en user mode (funcionamiento interno)
 	.if	\el == 0
 	mrs	x21, sp_el0
 	.else
@@ -70,6 +70,7 @@
 	ldp	x22, x23, [sp, #16 * 16]
 	ldp	x30, x21, [sp, #16 * 15] 
 
+	//Aqui en EL1 no hace falta retornar el sp ya que cuando estabamos en kernel_entry en el mismo nivel sp apuntaba al comienzo del stack del kernel task y cuando llamamos a kernel exit el stack de la interrupcion en esa tarea ya habra bajado al mismo nivel
 	.if	\el == 0
 	msr	sp_el0, x21
 	.endif /* \el == 0 */
@@ -183,10 +184,12 @@ el0_sync:
 	b.eq	el0_svc
 	handle_invalid_entry 0, SYNC_ERROR
 
+//declaracion de variables
 sc_nr	.req	x25					// number of system calls
 scno	.req	x26					// syscall number
 stbl	.req	x27					// syscall table pointer
 
+//cargamos la tabla y el indice del syscall si esta dentro del numero que tenemos lo llamamos sino nos vamos a error
 el0_svc:
 	adr	stbl, sys_call_table			// load syscall table pointer
 	uxtw	scno, w8				// syscall number in w8
@@ -194,11 +197,13 @@ el0_svc:
 	bl	enable_irq
 	cmp     scno, sc_nr                     	// check upper syscall limit
 	b.hs	ni_sys
-
+	//sacamos el pointer a la funcion de la tabla
+	//si lsl es left shit esto equivale a scno * 2^shift
 	ldr	x16, [stbl, scno, lsl #3]		// address in the syscall table
 	blr	x16					// call sys_* routine
 	b	ret_from_syscall
 
+//Si nos salimos entonces mandamos error
 ni_sys:
 	handle_invalid_entry 0, SYSCALL_ERROR
 

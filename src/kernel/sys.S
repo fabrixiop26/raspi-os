@@ -30,18 +30,19 @@ call_sys_clone:
 
 	/* Do the system call.  */
 	mov 	x0, x2					/* stack  */
-	mov	x8, #SYS_CLONE_NUMBER
+	mov	x8, #SYS_CLONE_NUMBER //x8 por ser long
 	svc	0x0
-
+	//Si es 0 inicio el nuevo hilo
 	cmp	x0, #0
 	beq	thread_start
 	ret
 
 thread_start:
+	//fp en 0
 	mov	x29, 0
-
 	/* Pick the function arg and execute.  */
 	mov	x0, x11
+	//llamo a la funcion en x10
 	blr	x10
 
 	/* We are done, pass the return value through x0.  */

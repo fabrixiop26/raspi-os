@@ -20,6 +20,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 	memzero((unsigned long)childregs, sizeof(struct pt_regs));
 	memzero((unsigned long)&p->cpu_context, sizeof(struct cpu_context));
 
+	//Si somos un hilo de kernel tratamos normal al proceso
 	if (clone_flags & PF_KTHREAD) {
 		p->cpu_context.x19 = fn;
 		p->cpu_context.x20 = arg;
@@ -78,8 +79,10 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 int move_to_user_mode(unsigned long pc)
 {
 	struct pt_regs *regs = task_pt_regs(current);
+	//Se limpia esta area de la memoria
 	memzero((unsigned long)regs, sizeof(*regs));
 	regs->pc = pc;
+	//Al retornar de la exception estaremos en EL0
 	regs->pstate = PSR_MODE_EL0t;
 	unsigned long stack = get_free_page(); //allocate new user stack
 	if (!stack) {
@@ -90,6 +93,7 @@ int move_to_user_mode(unsigned long pc)
 	return 0;
 }
 
+//Obtiene el tamaño del primer byte donde poder guardar pt_regs en el top del stack
 struct pt_regs * task_pt_regs(struct task_struct *tsk){
 	unsigned long p = (unsigned long)tsk + THREAD_SIZE - sizeof(struct pt_regs);
 	return (struct pt_regs *)p;

@@ -63,6 +63,7 @@ void user_process()
 }
 
 //Creo el proceso en el kernel y el mismo se encarga de pasarme a user mode
+//Esto es llamado por el scheduler
 void kernel_process()
 {
     printf("Kernel process started. EL %d\r\n", get_el());
@@ -113,7 +114,7 @@ void kernel_main(char proc_id)
         }
         int el = get_el();
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
-
+        //Creamos nuevo kernel thread
         int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process,0,0);
         if (res < 0)
         {
