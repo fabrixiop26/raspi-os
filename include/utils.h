@@ -47,4 +47,10 @@ extern unsigned int get32 ( unsigned long reg);
 */
 extern int get_el ( void );
 
+/**
+ * Obtiene el valor del stack pointer.
+ * @return La direccion donde se encuentra el stack pointer.
+*/
+extern int get_stack_pointer();
+
 #endif  /*_BOOT_H */

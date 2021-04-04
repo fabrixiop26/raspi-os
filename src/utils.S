@@ -19,3 +19,9 @@ delay:
 	subs x0, x0, #1
 	bne delay
 	ret
+
+//Ret llama el link register x29
+.globl get_stack_pointer
+get_stack_pointer:
+	mov x0, sp
+	ret

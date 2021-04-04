@@ -46,7 +46,7 @@
 	stp	x26, x27, [sp, #16 * 13]
 	stp	x28, x29, [sp, #16 * 14]
 
-	//si estamos en user mode cargamos en x21 el valor del stack sino simplemente asignamos guardamos en x21 el espacio que se reservaria para el stack (como a priori lo reducimos para guardar el add apuntara a la suma). Es necesario guardar sp_el0 si estamos en user mode (funcionamiento interno)
+	//si estamos en user mode cargamos en x21 el valor del stack sino simplemente asignamos guardamos en x21 el espacio que se reservaria para el stack (como a priori lo reducimos para guardar el add apuntara a la suma). Es necesario guardar sp_el0 ya que contiene el sp original ya que en EL0 este se sobreescribe
 	.if	\el == 0
 	mrs	x21, sp_el0
 	.else
@@ -57,20 +57,19 @@
 	mrs	x22, elr_el1
 	mrs	x23, spsr_el1
 
-	/* stp	x30, x22, [sp, #16 * 15] 
-	str	x23, [sp, #16 * 16] */
 	stp	x30, x21, [sp, #16 * 15] 
 	stp	x22, x23, [sp, #16 * 16]
 	.endm
 
 	//Devuelve el estado de los registros desde el stack
 	.macro	kernel_exit, el
-	/* ldr	x23, [sp, #16 * 16]
-	ldp	x30, x22, [sp, #16 * 15]  */
+
+	//Cuando estamos en kernel thread y termina para irse a user_mode
+	//sacaremos de pt_regs los valores de sp y pc e ira a user process
 	ldp	x22, x23, [sp, #16 * 16]
 	ldp	x30, x21, [sp, #16 * 15] 
 
-	//Aqui en EL1 no hace falta retornar el sp ya que cuando estabamos en kernel_entry en el mismo nivel sp apuntaba al comienzo del stack del kernel task y cuando llamamos a kernel exit el stack de la interrupcion en esa tarea ya habra bajado al mismo nivel
+	//Aqui en EL1 no hace falta retornar el sp ya que cuando estabamos en kernel_entry en el mismo nivel sp apuntaba al comienzo del stack del kernel task y cuando llamamos a kernel exit el stack de la interrupcion en esa tarea ya habra bajado al mismo nivel por lo que coinciden (esto pasara cuando el scheduler vuelva a nosotros )
 	.if	\el == 0
 	msr	sp_el0, x21
 	.endif /* \el == 0 */
@@ -207,20 +206,22 @@ el0_svc:
 ni_sys:
 	handle_invalid_entry 0, SYSCALL_ERROR
 
-//X0 contiene el valor del retorno del syscalls y debemos pasarlo al irnos al user mode
+//X0 contiene el valor del retorno del syscalls y debemos pasarlo al irnos al user mode (cuando se crea un user thread sera el PID)
 ret_from_syscall:
 	bl	disable_irq				
-	str	x0, [sp, #S_X0]				// returned x0
+	str	x0, [sp, #S_X0]		// returned x0
 	kernel_exit 0
 
 .globl ret_from_fork
+//Cuando se hace un ret en cpu_switch_to esto se llama
 ret_from_fork:
 	bl	schedule_tail //lama a schedule tail (enabled preempt)
-	cbz   x19, ret_to_user
+	cbz   x19, ret_to_user //si la funcion en x19 es 0 (es un user process) y salto a ret_to_user sino cargo normal la funcion pasada al kernel
 	mov	x0, x20 //cargo a x0 lo que esta en x20 (los arg al llamar a copy_process)
 	//llama a la funcion guardada en x19
-	blr	x19 		//should never return
-
+	blr	x19 		//Despues de que se llame a la funcion en x19 (la primera vez corresponde al kernel process) iremos a ret_to_user
+//sp va a estar arriba de chilregs al llegar aqui y user_process ya estara
+//en modo EL0
 ret_to_user:
 	bl disable_irq				
 	kernel_exit 0 

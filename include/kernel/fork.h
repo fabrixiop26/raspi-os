@@ -34,6 +34,7 @@ int move_to_user_mode(unsigned long pc);
 
 struct pt_regs * task_pt_regs(struct task_struct *tsk);
 
+//mismo estado que un kernel exit 272 bytes
 struct pt_regs {
 	unsigned long regs[31];
 	unsigned long sp;

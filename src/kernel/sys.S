@@ -22,6 +22,7 @@ call_sys_exit:
 	ret
 
 .globl call_sys_clone
+//retorna dos veces una en el proceso original y la segunda vez en la clonada
 call_sys_clone:
 	/* Save args for the child.  */
 	mov	x10, x0					/*fn*/
@@ -29,10 +30,12 @@ call_sys_clone:
 	mov	x12, x2					/*stack*/
 
 	/* Do the system call.  */
-	mov 	x0, x2					/* stack  */
+	mov 	x0, x2					/* guardamos el stack para pasarlo a la funcion  */
 	mov	x8, #SYS_CLONE_NUMBER //x8 por ser long
 	svc	0x0
-	//Si es 0 inicio el nuevo hilo
+	//Si es 0 significa que estamos ejecutandonos en el hilo nuevo
+	//si es non zero significa el pid del nuevo proceso y nos devolvemos a quien nos llamo (el kernel)
+	//tras el ret_user al seleccionar alguna funcion salta aqui con x0 en 0
 	cmp	x0, #0
 	beq	thread_start
 	ret

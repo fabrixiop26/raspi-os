@@ -14,6 +14,7 @@ static unsigned int semaphore = 0; ///< variable comun entre cpus para control*/
 
 void user_process1(char *array)
 {
+    printf("Stack Pointer Proceso 1: 0x%08x \r\n", get_stack_pointer());
     char buf[2] = {0};
     int cont = 200;
     while (cont >= 0)
@@ -28,13 +29,15 @@ void user_process1(char *array)
     }
 }
 
+//Todo el codigo aqui tiene su stack sin embargo los syscalls se hacen en el kernel process ya que deben cambiar de el0 a el1
 void user_process()
 {
     //El equivalente a sprintf
     //el buffer debe tener tamaño indicado
+    printf("Stack Pointer User Process: 0x%08x \r\n", get_stack_pointer());
     char buf[30] = {0};
     tfp_sprintf(buf, "User process started\n\r");
-    call_sys_write(buf);
+    call_sys_write("User Process Started \r\n");
     unsigned long stack = call_sys_malloc();
     if (stack < 0)
     {
@@ -59,11 +62,13 @@ void user_process()
         printf("Error while clonning process 2\n\r");
         return;
     }
+    printf("\r\nTerminado creacion de 2 procesos en user mode \r\n");
+    printf("Stack Pointer Fin User Process: 0x%08x \r\n", get_stack_pointer());
     call_sys_exit();
 }
 
 //Creo el proceso en el kernel y el mismo se encarga de pasarme a user mode
-//Esto es llamado por el scheduler
+//Se devuelve a la funcion que lo llamo
 void kernel_process()
 {
     printf("Kernel process started. EL %d\r\n", get_el());
@@ -72,6 +77,7 @@ void kernel_process()
     {
         printf("Error while moving process to user mode\n\r");
     }
+    printf("Stack Pointer Kernel Process: 0x%08x \r\n", get_stack_pointer());
 }
 
 /**
@@ -121,11 +127,12 @@ void kernel_main(char proc_id)
             printf("Error while starting kernel process");
             return;
         }
-
+        printf("\r\nCreado kernel_process \r\n");
         //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto
         while (1)
         {
             schedule();
+            printf("Main Loop.. \r\n");
             //uart_send(uart_recv());
         }
     }

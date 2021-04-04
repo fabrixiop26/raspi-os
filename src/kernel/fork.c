@@ -25,10 +25,15 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 		p->cpu_context.x19 = fn;
 		p->cpu_context.x20 = arg;
 	} else {
+		//Como al pasar a user mode dejamos su stack vacio y sp apuntado encima de sus childregs entonces aseguramos que cur_regs apunta a lo mismo. Aqui se guarda elr_el1 y demas valores del kernel entry incluyendo x10 x11 y x12 donde estan las funciones
 		struct pt_regs * cur_regs = task_pt_regs(current);
+		//Al nuevo proceso le pasamos la misma info de pt regs que la del kernel
 		*childregs = *cur_regs;
+		//al x0 le asignamos 0 ya que sera el valor de retorno para el caller esto en el assembly nos permitira saber si estamos en el mismo hilo o en el nuevo tambien fn sera 0 para salirnos del ret_from_fork
 		childregs->regs[0] = 0;
+		//Apuntamos el sp del pt regs al fondo de la pagina usada para esta tarea
 		childregs->sp = stack + PAGE_SIZE;
+		//Guardamos en la tarea actual un a puntador a este stack para poder limpiarlo
 		p->stack = stack;
 	}
 
@@ -46,7 +51,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 
 	//Apunta a la funcion ret_from_fork la cual activa preempt y llama a la funcion pasada
 	p->cpu_context.pc = (unsigned long)ret_from_fork;
-	//stack pointer es igual a la direccion de la pagina + tamaño de la pagina
+	//stack pointer es igual a la direccion antes de pt_regs
 	p->cpu_context.sp = (unsigned long)childregs;
 	//Este nuevo proceso a punta a nada
 	p->next_task = 0;
@@ -70,6 +75,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 	printf("Memory Pages occupied: %d/%d \r\n", current_pages, PAGING_PAGES);
 	printf("\n\r----------- Previous task -----------\r\n");
 	printf("previous_task->next_task  = 0x%08x.\r\n", previous_task->next_task);
+	printf("Stack Pointer En Fork: 0x%08x \r\n", get_stack_pointer());
 
 	preempt_enable();
 	//Devuelo el "PID"
@@ -79,8 +85,9 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 int move_to_user_mode(unsigned long pc)
 {
 	struct pt_regs *regs = task_pt_regs(current);
-	//Se limpia esta area de la memoria
+	//Se limpia esta area de la memoria (4 safety)
 	memzero((unsigned long)regs, sizeof(*regs));
+	//El pc de regs apunta a la funcion a llamar en user mode ya que de aqui al ejecutarse kernel_exit pc se copia a elr_el1 y de esta forma ir a la funcion al retornar
 	regs->pc = pc;
 	//Al retornar de la exception estaremos en EL0
 	regs->pstate = PSR_MODE_EL0t;
@@ -88,7 +95,9 @@ int move_to_user_mode(unsigned long pc)
 	if (!stack) {
 		return -1;
 	}
+	//El sp apunta al fondo del stack (origin) de la nueva pagina
 	regs->sp = stack + PAGE_SIZE;
+	//El stack del proceso actual a punta a la nueva pagina para el usuario
 	current->stack = stack;
 	return 0;
 }
