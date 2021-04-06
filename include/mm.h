@@ -16,11 +16,13 @@
 #define SECTION_SIZE			(1 << SECTION_SHIFT)	
 
 #define LOW_MEMORY              	(2 * SECTION_SIZE) //2*2^21 = 4Mb tamaño reservado para el OS y el init task stack
+#define BASE_MEMORY         ((LOW_MEMORY * 8) + (PAGE_SIZE * 3)) //tomar en cuenta el stack de los otros 3 cores que ocuparan 3 paginas exactamente
 
 //Primer byte donde comienza MMIO. De esta direccion en adelante es reservado
+//recordar que esta el framebuffer y debo tmbn evitarlo
 #define HIGH_MEMORY             PBASE
 
-#define PAGING_MEMORY           (HIGH_MEMORY - LOW_MEMORY)
+#define PAGING_MEMORY           (HIGH_MEMORY - BASE_MEMORY)
 #define PAGING_PAGES            (PAGING_MEMORY/PAGE_SIZE)
 
 #ifndef __ASSEMBLER__

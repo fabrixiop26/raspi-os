@@ -1,12 +1,14 @@
 #include "entry.h"
+#include "arm/sysregs.h"
+#include "kernel/sys.h"
 
 	//Guardamos el estado mostramos el mensaje en pantalla
 	//x0: contiene el tipo
 	//x1: cargamos la informacion de que causo una expecion del registro esr_el1 (Exception Syndrome Register)
 	//x2: cargamos la direccion que que se ejecutaba cuando la expecion fue disparada
 	//y entramos a ciclo con err_hang ya que esto no deberia haberse ejecutado
-	.macro handle_invalid_entry type
-	kernel_entry
+	.macro handle_invalid_entry el, type
+	kernel_entry \el
 	mov	x0, #\type
 	mrs	x1, esr_el1
 	mrs	x2, elr_el1
@@ -26,7 +28,7 @@
 	 */
 
 	//Guarda el estado de los registros en el stack
-	.macro	kernel_entry
+	.macro	kernel_entry, el
 	sub	sp, sp, #S_FRAME_SIZE
 	stp	x0, x1, [sp, #16 * 0]
 	stp	x2, x3, [sp, #16 * 1]
@@ -44,18 +46,34 @@
 	stp	x26, x27, [sp, #16 * 13]
 	stp	x28, x29, [sp, #16 * 14]
 
+	//si estamos en user mode cargamos en x21 el valor del stack sino simplemente asignamos guardamos en x21 el espacio que se reservaria para el stack (como a priori lo reducimos para guardar el add apuntara a la suma). Es necesario guardar sp_el0 ya que contiene el sp original ya que en EL0 este se sobreescribe
+	.if	\el == 0
+	mrs	x21, sp_el0
+	.else
+	add	x21, sp, #S_FRAME_SIZE
+	.endif /* \el == 0 */
+
 	//Es necensario guardar esto ahora ya que despues de un interrupt puede seguirle otro proceso diferente
 	mrs	x22, elr_el1
 	mrs	x23, spsr_el1
 
-	stp	x30, x22, [sp, #16 * 15] 
-	str	x23, [sp, #16 * 16]
+	stp	x30, x21, [sp, #16 * 15] 
+	stp	x22, x23, [sp, #16 * 16]
 	.endm
 
 	//Devuelve el estado de los registros desde el stack
-	.macro	kernel_exit
-	ldr	x23, [sp, #16 * 16]
-	ldp	x30, x22, [sp, #16 * 15] 
+	.macro	kernel_exit, el
+
+	//Cuando estamos en kernel thread y termina para irse a user_mode
+	//sacaremos de pt_regs los valores de sp y pc e ira a user process
+	ldp	x22, x23, [sp, #16 * 16]
+	ldp	x30, x21, [sp, #16 * 15] 
+
+	//Aqui en EL1 no hace falta retornar el sp ya que cuando estabamos en kernel_entry en el mismo nivel sp apuntaba al comienzo del stack del kernel task y cuando llamamos a kernel exit el stack de la interrupcion en esa tarea ya habra bajado al mismo nivel por lo que coinciden (esto pasara cuando el scheduler vuelva a nosotros )
+	.if	\el == 0
+	msr	sp_el0, x21
+	.endif /* \el == 0 */
+
 	//Es necensario cargar esto ahora ya que despues de un interrupt puede seguirle otro proceso diferente
 	msr	elr_el1, x22			
 	msr	spsr_el1, x23
@@ -97,8 +115,8 @@ vectors:
 	ventry	fiq_invalid_el1h			// FIQ EL1h
 	ventry	error_invalid_el1h			// Error EL1h
 
-	ventry	sync_invalid_el0_64			// Synchronous 64-bit EL0
-	ventry	irq_invalid_el0_64			// IRQ 64-bit EL0
+	ventry	el0_sync				// Synchronous 64-bit EL0
+	ventry	el0_irq					// IRQ 64-bit EL0
 	ventry	fiq_invalid_el0_64			// FIQ 64-bit EL0
 	ventry	error_invalid_el0_64			// Error 64-bit EL0
 
@@ -108,61 +126,105 @@ vectors:
 	ventry	error_invalid_el0_32			// Error 32-bit EL0
 
 sync_invalid_el1t:
-	handle_invalid_entry  SYNC_INVALID_EL1t
+	handle_invalid_entry 1,  SYNC_INVALID_EL1t
 
 irq_invalid_el1t:
-	handle_invalid_entry  IRQ_INVALID_EL1t
+	handle_invalid_entry  1, IRQ_INVALID_EL1t
 
 fiq_invalid_el1t:
-	handle_invalid_entry  FIQ_INVALID_EL1t
+	handle_invalid_entry  1, FIQ_INVALID_EL1t
 
 error_invalid_el1t:
-	handle_invalid_entry  ERROR_INVALID_EL1t
+	handle_invalid_entry  1, ERROR_INVALID_EL1t
 
 sync_invalid_el1h:
-	handle_invalid_entry  SYNC_INVALID_EL1h
+	handle_invalid_entry 1, SYNC_INVALID_EL1h
 
 fiq_invalid_el1h:
-	handle_invalid_entry  FIQ_INVALID_EL1h
+	handle_invalid_entry  1, FIQ_INVALID_EL1h
 
 error_invalid_el1h:
-	handle_invalid_entry  ERROR_INVALID_EL1h
-
-sync_invalid_el0_64:
-	handle_invalid_entry  SYNC_INVALID_EL0_64
-
-irq_invalid_el0_64:
-	handle_invalid_entry  IRQ_INVALID_EL0_64
+	handle_invalid_entry  1, ERROR_INVALID_EL1h
 
 fiq_invalid_el0_64:
-	handle_invalid_entry  FIQ_INVALID_EL0_64
+	handle_invalid_entry  0, FIQ_INVALID_EL0_64
 
 error_invalid_el0_64:
-	handle_invalid_entry  ERROR_INVALID_EL0_64
+	handle_invalid_entry  0, ERROR_INVALID_EL0_64
 
 sync_invalid_el0_32:
-	handle_invalid_entry  SYNC_INVALID_EL0_32
+	handle_invalid_entry  0, SYNC_INVALID_EL0_32
 
 irq_invalid_el0_32:
-	handle_invalid_entry  IRQ_INVALID_EL0_32
+	handle_invalid_entry  0, IRQ_INVALID_EL0_32
 
 fiq_invalid_el0_32:
-	handle_invalid_entry  FIQ_INVALID_EL0_32
+	handle_invalid_entry  0, FIQ_INVALID_EL0_32
 
 error_invalid_el0_32:
-	handle_invalid_entry  ERROR_INVALID_EL0_32
+	handle_invalid_entry  0, ERROR_INVALID_EL0_32
 
 el1_irq:
-	kernel_entry 
+	kernel_entry 1 
 	bl	handle_irq
-	kernel_exit 
+	kernel_exit 1 
+
+el0_irq:
+	kernel_entry 0 
+	bl	handle_irq
+	kernel_exit 0
+
+//entramos en kernel entry y verificamos que la interrupccion fuese generada por svc sino es un error
+el0_sync:
+	kernel_entry 0
+	mrs	x25, esr_el1				// read the syndrome register
+	lsr	x24, x25, #ESR_ELx_EC_SHIFT		// exception class
+	cmp	x24, #ESR_ELx_EC_SVC64			// SVC in 64-bit state 
+	b.eq	el0_svc
+	handle_invalid_entry 0, SYNC_ERROR
+
+//declaracion de variables
+sc_nr	.req	x25					// number of system calls
+scno	.req	x26					// syscall number
+stbl	.req	x27					// syscall table pointer
+
+//cargamos la tabla y el indice del syscall si esta dentro del numero que tenemos lo llamamos sino nos vamos a error
+el0_svc:
+	adr	stbl, sys_call_table			// load syscall table pointer
+	uxtw	scno, w8				// syscall number in w8
+	mov	sc_nr, #__NR_syscalls
+	bl	enable_irq
+	cmp     scno, sc_nr                     	// check upper syscall limit
+	b.hs	ni_sys
+	//sacamos el pointer a la funcion de la tabla
+	//si lsl es left shit esto equivale a scno * 2^shift
+	ldr	x16, [stbl, scno, lsl #3]		// address in the syscall table
+	blr	x16					// call sys_* routine
+	b	ret_from_syscall
+
+//Si nos salimos entonces mandamos error
+ni_sys:
+	handle_invalid_entry 0, SYSCALL_ERROR
+
+//X0 contiene el valor del retorno del syscalls y debemos pasarlo al irnos al user mode (cuando se crea un user thread sera el PID)
+ret_from_syscall:
+	bl	disable_irq				
+	str	x0, [sp, #S_X0]		// returned x0
+	kernel_exit 0
 
 .globl ret_from_fork
+//Cuando se hace un ret en cpu_switch_to esto se llama
 ret_from_fork:
 	bl	schedule_tail //lama a schedule tail (enabled preempt)
+	cbz   x19, ret_to_user //si la funcion en x19 es 0 (es un user process) y salto a ret_to_user sino cargo normal la funcion pasada al kernel
 	mov	x0, x20 //cargo a x0 lo que esta en x20 (los arg al llamar a copy_process)
 	//llama a la funcion guardada en x19
-	blr	x19 		//should never return
+	blr	x19 		//Despues de que se llame a la funcion en x19 (la primera vez corresponde al kernel process) iremos a ret_to_user
+//sp va a estar arriba de chilregs al llegar aqui y user_process ya estara
+//en modo EL0
+ret_to_user:
+	bl disable_irq				
+	kernel_exit 0 
 
 .globl err_hang
 err_hang: b err_hang

@@ -12,6 +12,7 @@ x8 <- x8 + 16
 */
 
 .globl cpu_switch_to
+//Todo esto conincide con los campos de task_struct al comienzo de cada pagina
 cpu_switch_to:
 	mov	x10, #THREAD_CPU_CONTEXT
 	add	x8, x0, x10 //pasamos a x8 el cpu_context de p->current

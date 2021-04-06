@@ -50,6 +50,12 @@ extern volatile unsigned int mbox[36];
 #define MBOX_TAG_GETFB      0x40001
 #define MBOX_TAG_GETPITCH   0x40008
 
+//Clocks
+#define MBOX_TAG_GETCLOCKRATE 0x30002
+#define MBOX_TAG_CLOCK_ARM 0x000000003
+#define MBOX_TAG_CLOCK_CORE 0x000000004
+#define MBOX_TAG_CLOCK_UART 0x000000002
+
 /**
  * Hace un llamado al mailbox para comunicacion.
  * @param ch El canal al cual enviar

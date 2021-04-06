@@ -1,6 +1,8 @@
 #include "kernel/scheduler.h"
 #include "drivers/irq.h"
 #include "printf.h"
+#include "mm.h"
+#include "utils.h"
 
 static struct task_struct init_task = INIT_TASK;
 struct task_struct *current = &(init_task);
@@ -9,7 +11,8 @@ struct task_struct *current = &(init_task);
 //struct task_struct * task[NR_TASKS] = {&(init_task), };
 struct task_struct *initial_task = &(init_task);
 
-//int nr_tasks = 1;
+int nr_tasks = 0;
+//Para debug
 int current_task_pid = 0;
 int next_task_pid = 0;
 
@@ -73,14 +76,6 @@ void schedule(void)
 
 void switch_to(struct task_struct * next) 
 {
-	/* for(int t=0; t < nr_tasks; t++) {
-		p = task[t];
-		printf("\n\rtask[%d] counter = %d\n\r", t, p->counter);
-		printf("task[%d] priority = %d\n\r", t, p->priority);
-		printf("task[%d] preempt_count = %d\n\r", t, p->preempt_count);
-		printf("task[%d] sp = 0x%08x\n\r", t, p->cpu_context.sp);
-		printf("\n\r###################################\r\n");
-	} */
 	
 	if (current == next) 
 		return;
@@ -120,4 +115,22 @@ void timer_tick()
 	enable_irq();
 	_schedule();
 	disable_irq();
+}
+
+void exit_process(){
+	preempt_disable();
+	struct task_struct *p;
+	for (p = initial_task; p; p = p->next_task) {
+		if(p == current){
+			p->state = TASK_ZOMBIE;
+			break;
+		}
+	}
+	printf("Proceso en p: 0x%08x borrando stack en: 0x%08x \r\n", p, p->stack);
+	if (current->stack) {
+		free_page(current->stack);
+	}
+	preempt_enable();
+	printf("Stack Pointer After Exit Process: 0x%08x \r\n", get_stack_pointer());
+	schedule();
 }

@@ -3,13 +3,13 @@
 #include "terminal.h"
 #include "utils.h"
 #include "printf.h"
+#include "drawutils.h"
 
-
-unsigned int width, height, pitch, isrgb;
+unsigned int width, height, pitch, isrgb, fb_size;
 //apuntador al framebuffer
 unsigned char *fb;
 
-//Despues de cada tag debe especificarse dos veces el length en bytes del request el cual coincide con el de la response
+//Despues de cada tag debe especificarse Value buffer size (bytes) y Req. + value length (bytes)
 void fb_init()
 {
 
@@ -19,15 +19,15 @@ void fb_init()
 
     mbox[2] = MBOX_TAG_SETPHYWH; // Tag identifier
     mbox[3] = 8;                 // Value size in bytes
-    mbox[4] = 8;                 // Value size in bytes (again!)
-    mbox[5] = 480;               // Value(width)
-    mbox[6] = 320;               // Value(height)
+    mbox[4] = 8;                 // Req. + value length (bytes)
+    mbox[5] = P_WIDTH;               // Value(width)
+    mbox[6] = P_HEIGHT;               // Value(height)
 
     mbox[7] = MBOX_TAG_SETVIRTWH;
-    mbox[8] = 8;
-    mbox[9] = 8;
-    mbox[10] = 480; //virutal width
-    mbox[11] = 320; //virtual height
+    mbox[8] = 8; //Value size in bytes
+    mbox[9] = 8; //Req. + value length (bytes)
+    mbox[10] = V_WIDTH; //virutal width
+    mbox[11] = V_HEIGHT; //virtual height
 
     mbox[12] = MBOX_TAG_SETVIRTOFF;
     mbox[13] = 8;
@@ -46,10 +46,10 @@ void fb_init()
     mbox[24] = 1; // RGB
 
     mbox[25] = MBOX_TAG_GETFB;
-    mbox[26] = 8;
-    mbox[27] = 8;
-    mbox[28] = 4096; // FrameBufferInfo.pointer
-    mbox[29] = 0;    // FrameBufferInfo.size
+    mbox[26] = 8; //Value buffer size (bytes)
+    mbox[27] = 8; //Req. + value length (bytes)
+    mbox[28] = 4096; // FrameBufferInfo.pointer (bytes)
+    mbox[29] = 0;    // FrameBufferInfo.size (bytes)
 
     mbox[30] = MBOX_TAG_GETPITCH;
     mbox[31] = 4;
@@ -66,7 +66,15 @@ void fb_init()
         height = mbox[6];      // Actual physical height
         pitch = mbox[33];       // Number of bytes per line
         isrgb = mbox[24];       // Pixel order
+        fb_size = mbox[29];    //Obtengo el tamaño
         fb = (unsigned char *)((long)mbox[28]);
+        printf("####Framebuffer Info:###### \r\n");
+        printf("Framebuffer address: 0x%08x \r\n", fb);
+        printf("Physical Width: %d\r\n", width);
+        printf("Physical Height: %d\r\n", height);
+        printf("Pitch: %d (bytes)\r\n", pitch);
+        printf("Framebuffer Size: %d (bytes)\r\n", fb_size);
+        printf("#############################\r\n\n");
     } else{
         printf("No se pudo inicializar el framebuffer \r\n");
     }
@@ -187,7 +195,7 @@ void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill)
 
 void drawChar(int x, int y, unsigned char ch, unsigned char attr, int zoom)
 {
-    //Si el char esta en el arreglo (fila) y multiplico por el tamaño en bytes de cada "glyph e.g matrix de 8x8 que pinta" de linea (FONT_BPG) para obtener el comienzo del elemnto que es
+    //Si el char esta en el arreglo (fila) y multiplico por el tamaño en bytes de cada "glyph e.g matrix de 8x8 que pinta" de linea (FONT_BPG) para obtener el comienzo del elemento que es
     unsigned short int *glyph = (unsigned short int *)&font9x16_basic + (ch < FONT_NUMGLYPHS ? ch : 0) * FONT_BPG;
 
     for (int i = 1; i <= (FONT_WIDTH * zoom); i++)
@@ -225,7 +233,7 @@ void drawString(int x, int y, char *s, unsigned char attr, int zoom)
         }
         else
         {
-            drawChar(*s, x, y, attr, zoom);
+            drawChar(x, y, *s, attr, zoom);
             x += (FONT_WIDTH + 1) * zoom;
         }
         s++;

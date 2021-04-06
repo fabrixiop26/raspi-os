@@ -13,7 +13,8 @@ _start:
     mrs    x0, mpidr_el1        
     and    x0, x0,#0xFF        // Check processor id
     cbz    x0, master        // Hang for all non-primary CPU
-    b    init_stack     //for the rest of cpus inicializa su stack y salta a kernel_main
+	wfe	   //Las demas cpus esperan por sev que se ejecuta cuando cpu 0 limpia bss
+    b      init_stack     //for the rest of cpus inicializa su stack y salta a kernel_main
 
 //clean the bss-section memezero recive bss_begin y (bss_end-bss_begin)
 //por convencion la funcion en ARMv8 recibe 7 argumentos de los registros x0-x6
@@ -45,6 +46,8 @@ el1_entry:
 	adr	x1, bss_end
 	sub	x1, x1, x0
 	bl 	memzero
+	sev
+	b init_stack
 
 //el kernel se carga en address 0 asi que defino el stack pointer a 4MB
 //para que el stack no sobreescriba el kernel image
@@ -52,9 +55,12 @@ init_stack:
 	mrs	x0, mpidr_el1
 	and	x0, x0,#0xFF		// get processor id again
 	mov x1, x0				// store processor id in 'x1' to preserve 'x0' when call kernel_main
-	mov x2, #0x1000			// define the stack offset in 4Kb (0x1000)
+	mov x3, #8 //multiplicador para low memory
+	mov x4, #LOW_MEMORY  //Cargo low memory 4mb base
+	mul x4, x4, x3 //multiplico por 8 para que sea una base de 32mb el primer stack
+	mov x2, #PAGE_SIZE		// define the stack offset in 4Kb (0x1000) 2^12
 	mul x1, x1,x2			// multiply the stack offset by processor id
-	add x1, x1,#LOW_MEMORY	// add to base address (#LOW_MEMORY)
+	add x1, x1, x4	// add to base address (#LOW_MEMORY * 8 32mb)
 	mov	sp, x1
 	bl	kernel_main			// call 'kernel_main' passing processor id through 'x0'
 
