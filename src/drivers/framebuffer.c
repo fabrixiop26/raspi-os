@@ -87,6 +87,14 @@ void drawPixel(int x, int y, unsigned char attr)
     *((unsigned int *)(fb + offs)) = vgapal[attr & 0x0f];
 }
 
+void drawPixel2(int x, int y, unsigned long int c)
+{
+    int offs = (y * pitch) + (x * 4);
+    //escojo un color dentro del arreglo vgapal que es la paleta
+    *((unsigned int *)(fb + offs)) = c;
+}
+
+
 void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill)
 {
     int y = y1;

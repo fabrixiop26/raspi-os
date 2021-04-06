@@ -9,6 +9,7 @@
 #include "drivers/framebuffer.h"
 #include "drawutils.h"
 #include "drivers/mailbox.h"
+#include "ugui.h"
 /**
  * \file kernel.c
  * \brief Funciones principales del kernel
@@ -68,7 +69,7 @@ void draw()
         fps = 1000000 / elapsed;
         char buff[30] = {0};
         tfp_sprintf(buff, "FPS: %d", fps);
-        drawString(100,100, buff, 0x0f, ZOOM);
+        drawString(100, 100, buff, 0x0f, ZOOM);
         if (control <= 0)
         {
             col += 1;
@@ -194,6 +195,42 @@ void clock_rates()
     }
 }
 
+//Custom drawing
+void UserDrawPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
+{
+    drawPixel2(x, y, c);
+}
+
+void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1,  UG_COLOR c2, unsigned char cond)
+{
+    UG_U16 sec;
+    UG_U8 j, tog;
+    while (cond)
+    {
+        for (sec = 1; sec != 0x100; sec <<= 1)
+        {
+            j++;
+            if (j >= 9)
+            {
+                j = 0;
+                tog = !tog;
+            }
+            if (tog)
+            {
+                UG_DrawArc(100, 200, 20, sec, c1);
+            }
+            else
+            {
+                UG_DrawArc(100, 200, 20, sec, c2);
+            }
+
+            wait_msec(100000);
+        }
+    }
+}
+
+UG_GUI gui;
+
 /**
 *  Punto principal de entrada del programa.
 *  @param proc_id Identificador de la cpu
@@ -217,6 +254,17 @@ void kernel_main(char proc_id)
         //espera 0.12s antes de inicializar el framebuffer
         wait_msec(120000);
         fb_init();
+        //Iniciar ugui
+        UG_Init(&gui, UserDrawPixel, P_WIDTH, P_HEIGHT);
+        UG_FontSelect(&FONT_10X16);
+        UG_ConsoleSetArea(0, 60, 480, 120);
+        UG_ConsoleSetBackcolor(C_BLACK);
+        UG_ConsoleSetForecolor(C_WHITE);
+        UG_ConsolePutString("Iniciando consola ... \n");
+        UG_ConsoleSetForecolor(C_GREEN);
+        UG_ConsolePutString("System Initialization Complete.\n");
+
+        ShowLoadingCircle(120,200,30, C_BLACK, C_WHITE, 1);
     }
 
     printf("Processor # %c initialized \r\n", (proc_id + '0'));
@@ -235,13 +283,13 @@ void kernel_main(char proc_id)
         int el = get_el();
         printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
         //Creamos nuevo kernel thread
-        int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0, 0);
+        /* int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0, 0);
         if (res < 0)
         {
             printf("Error while starting kernel process");
             return;
         }
-        printf("\r\nCreado kernel_process \r\n");
+        printf("\r\nCreado kernel_process \r\n"); */
         //draw_test();
         //offset_screen();
         clock_rates();
