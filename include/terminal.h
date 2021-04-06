@@ -32,7 +32,7 @@ enum
 {
     FONT_WIDTH = 9,
     FONT_HEIGHT = 16,
-    FONT_BPG = 18, // Bytes per glyph
+    FONT_BPG = 9, // Bytes per glyph
     FONT_BPL = 1, // Bytes per line
     FONT_NUMGLYPHS = 128//224
 };
