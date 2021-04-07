@@ -43,7 +43,7 @@ void fb_init()
     mbox[21] = MBOX_TAG_SETPXLORDR;
     mbox[22] = 4;
     mbox[23] = 4;
-    mbox[24] = 1; // RGB
+    mbox[24] = 0; // 0 RGB? y 1 BGR? RGB o BGR
 
     mbox[25] = MBOX_TAG_GETFB;
     mbox[26] = 8; //Value buffer size (bytes)
@@ -72,6 +72,7 @@ void fb_init()
         printf("Framebuffer address: 0x%08x \r\n", fb);
         printf("Physical Width: %d\r\n", width);
         printf("Physical Height: %d\r\n", height);
+        printf("RGB?: %d\r\n", isrgb);
         printf("Pitch: %d (bytes)\r\n", pitch);
         printf("Framebuffer Size: %d (bytes)\r\n", fb_size);
         printf("#############################\r\n\n");

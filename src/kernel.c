@@ -201,6 +201,22 @@ void UserDrawPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
     drawPixel2(x, y, c);
 }
 
+void mainWindowsCallback(UG_MESSAGE *msg){
+    if(msg->type == MSG_TYPE_OBJECT){
+        if(msg->id == OBJ_TYPE_BUTTON){
+            switch (msg->sub_id)
+            {
+            case BTN_ID_0:
+                printf("Button pressed \r\n");
+                break;
+            
+            default:
+                break;
+            }
+        }
+    }
+}
+
 void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1,  UG_COLOR c2, unsigned char cond)
 {
     UG_U16 sec;
@@ -256,15 +272,42 @@ void kernel_main(char proc_id)
         fb_init();
         //Iniciar ugui
         UG_Init(&gui, UserDrawPixel, P_WIDTH, P_HEIGHT);
+        UG_FontSelect(&FONT_16X26);
+        UG_SetForecolor(C_YELLOW);
+        UG_PutString(136, 0, "Max Ventas OS");
+        UG_ConsoleSetArea(0, 60, 480, 260);
+        UG_SetForecolor(C_WHITE);
         UG_FontSelect(&FONT_10X16);
-        UG_ConsoleSetArea(0, 60, 480, 120);
         UG_ConsoleSetBackcolor(C_BLACK);
         UG_ConsoleSetForecolor(C_WHITE);
         UG_ConsolePutString("Iniciando consola ... \n");
         UG_ConsoleSetForecolor(C_GREEN);
         UG_ConsolePutString("System Initialization Complete.\n");
+        UG_ConsoleSetForecolor(C_WHITE);
+        UG_ConsolePutString(">");
+        
+        /* UG_ButtonCreate ( &win1 , &btn1 , BTN_ID_0 , 10 , 10 , 110 , 60 );
+        UG_ButtonSetFont( &win1, BTN_ID_0, &FONT_10X16);
+        UG_ButtonSetText(&win1, BTN_ID_0, "Button A");
 
-        ShowLoadingCircle(120,200,30, C_BLACK, C_WHITE, 1);
+        
+
+        UG_WindowShow(&win1);
+
+        UG_Update();
+        btn1.state = BTN_STATE_PRESSED;
+        win1_objs[0].update(&win1, (UG_OBJECT*)&btn1);
+        wait_msec(100000);
+         UG_Update(); */
+        /* UG_FontSelect(&FONT_10X16);
+        UG_SetForecolor(C_WHITE);
+        UG_PutString(175, 0, "Max Ventas OS");
+        UG_ConsoleSetArea(0, 60, 480, 120);
+        UG_ConsoleSetBackcolor(C_BLACK);
+        UG_ConsoleSetForecolor(C_WHITE);
+        UG_ConsolePutString("Iniciando consola ... \n");
+        UG_ConsoleSetForecolor(C_GREEN);
+        UG_ConsolePutString("System Initialization Complete.\n"); */
     }
 
     printf("Processor # %c initialized \r\n", (proc_id + '0'));

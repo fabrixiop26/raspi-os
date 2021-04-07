@@ -4976,7 +4976,7 @@ void UG_PutChar( char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc )
 void UG_ConsolePutString( char* str )
 {
    char chr;
-   UG_U8 cw;
+   //UG_U8 cw;
 
    while ( *str != 0 )
    {
@@ -4986,6 +4986,18 @@ void UG_ConsolePutString( char* str )
          gui->console.x_pos = gui->x_dim;
          str++;
          continue;
+      }
+      UG_ConsolePutChar(chr);
+      str++;
+   }
+}
+
+void UG_ConsolePutChar(char chr){
+   UG_U8 cw;
+   if ( chr == '\n' )
+      {
+         gui->console.x_pos = gui->x_dim;
+         return;
       }
       
       cw = gui->font.widths ? gui->font.widths[chr - gui->font.start_char] : gui->font.char_width;
@@ -5004,8 +5016,6 @@ void UG_ConsolePutString( char* str )
       }
 
       UG_PutChar(chr, gui->console.x_pos, gui->console.y_pos, gui->console.fore_color, gui->console.back_color);
-      str++;
-   }
 }
 
 void UG_ConsoleSetArea( UG_S16 xs, UG_S16 ys, UG_S16 xe, UG_S16 ye )
