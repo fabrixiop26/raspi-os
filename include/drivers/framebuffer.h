@@ -25,6 +25,8 @@ void drawPixel(int x, int y, unsigned char attr);
  * @param attr 8 bits de configuracion de color. Los ultimos 4 bits el color de la fuente, los primeros 4 bits el color del fondo.
  * @param zoom el tamaño con el cual dibujar la fuente.
 */
+
+void drawPixel2(int x, int y, unsigned long int c);
 void drawChar(int x, int y, unsigned char ch, unsigned char attr, int zoom);
 /**
  * Dibuja un secuencia de caracteres en pantalla.

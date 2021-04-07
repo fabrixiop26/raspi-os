@@ -3,6 +3,7 @@
 #include "peripherals/gpio.h"
 #include "printf.h"
 #include "drivers/framebuffer.h"
+#include "ugui.h"
 
 /* typedef struct point {
 	int x;
@@ -17,6 +18,9 @@ const char charHeigth = 16;
 const char lineHeight = charHeigth + 1;
 const char separation = charWidth + 1;
 int zoom = 1;
+
+char cmd[256] = {0};
+int cChar = 0;
 
 void uart_send(char c)
 {
@@ -83,16 +87,24 @@ void handle_irq_uart()
 		//Esto se volvera line height
 		y += lineHeight * zoom;
 		x = 0;
-		drawChar(x, y, c, 0x0f, zoom);
+		for(int i = 0; i < cChar; i++){
+			cmd[i] = 0;
+		}
+		cChar = 0;
+		UG_ConsolePutString("\n>");
+		//drawChar(x, y, c, 0x0f, zoom);
 	}
 	else
 	{
-		drawChar(x, y, c, 0x0f, zoom);
+		//drawChar(x, y, c, 0x0f, zoom);
 		//Esto puede ser un valor no necesario de la fuente
 		//como espaciado
 		x += separation * zoom;
 		uart_send(c);
+		cmd[cChar++] = c;
+		UG_ConsolePutChar(c);
 	}
+	
 	//Limpio el pending iterrupt the receive uart
 	put32(UART_ICR, UARTRXINTR);
 }
