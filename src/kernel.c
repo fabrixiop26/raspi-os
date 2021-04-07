@@ -248,7 +248,7 @@ void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1, UG_COLOR c2, u
     }
 }
 
-UG_GUI *gui;
+UG_GUI gui;
 
 void ShowWindows()
 {
@@ -296,7 +296,7 @@ void kernel_main(char proc_id)
         wait_msec(120000);
         fb_init();
         //Iniciar ugui
-
+        UG_Init(&gui, UserDrawPixel, 480,320);
         UG_FontSelect(&FONT_16X26);
         UG_SetForecolor(C_YELLOW);
         UG_PutString(136, 0, "Max Ventas OS");
