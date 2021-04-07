@@ -201,15 +201,18 @@ void UserDrawPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
     drawPixel2(x, y, c);
 }
 
-void mainWindowsCallback(UG_MESSAGE *msg){
-    if(msg->type == MSG_TYPE_OBJECT){
-        if(msg->id == OBJ_TYPE_BUTTON){
+void mainWindowsCallback(UG_MESSAGE *msg)
+{
+    if (msg->type == MSG_TYPE_OBJECT)
+    {
+        if (msg->id == OBJ_TYPE_BUTTON)
+        {
             switch (msg->sub_id)
             {
             case BTN_ID_0:
                 printf("Button pressed \r\n");
                 break;
-            
+
             default:
                 break;
             }
@@ -217,7 +220,7 @@ void mainWindowsCallback(UG_MESSAGE *msg){
     }
 }
 
-void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1,  UG_COLOR c2, unsigned char cond)
+void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1, UG_COLOR c2, unsigned char cond)
 {
     UG_U16 sec;
     UG_U8 j, tog;
@@ -245,7 +248,29 @@ void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1,  UG_COLOR c2, 
     }
 }
 
-UG_GUI gui;
+UG_GUI *gui;
+
+void ShowWindows()
+{
+    UG_GUI gui;
+    UG_Init(&gui, UserDrawPixel, P_WIDTH, P_HEIGHT);
+    UG_WINDOW win;
+    UG_TEXTBOX textBox;
+    UG_OBJECT objs[2];
+    UG_WindowCreate(&win, objs, 2, mainWindowsCallback);
+    UG_WindowSetTitleTextFont(&win, &FONT_16X26);
+    UG_WindowSetTitleTextColor(&win, C_YELLOW);
+    UG_WindowSetTitleText(&win, "Test");
+    UG_WindowSetTitleTextAlignment(&win, ALIGN_CENTER);
+
+    UG_RESULT res = UG_TextboxCreate(&win, &textBox, TXB_ID_0, 150, 0, 330, 200);
+    UG_TextboxSetFont(&win, TXB_ID_0, &FONT_10X16);
+    UG_TextboxSetText(&win, TXB_ID_0, "This is an example");
+    UG_TextboxSetForeColor(&win, TXB_ID_0, C_BLACK);
+    UG_TextboxSetAlignment(&win, TXB_ID_0, ALIGN_TOP_CENTER);
+    UG_WindowShow(&win);
+    UG_Update();
+}
 
 /**
 *  Punto principal de entrada del programa.
@@ -271,7 +296,7 @@ void kernel_main(char proc_id)
         wait_msec(120000);
         fb_init();
         //Iniciar ugui
-        UG_Init(&gui, UserDrawPixel, P_WIDTH, P_HEIGHT);
+
         UG_FontSelect(&FONT_16X26);
         UG_SetForecolor(C_YELLOW);
         UG_PutString(136, 0, "Max Ventas OS");
@@ -285,29 +310,6 @@ void kernel_main(char proc_id)
         UG_ConsolePutString("System Initialization Complete.\n");
         UG_ConsoleSetForecolor(C_WHITE);
         UG_ConsolePutString(">");
-        
-        /* UG_ButtonCreate ( &win1 , &btn1 , BTN_ID_0 , 10 , 10 , 110 , 60 );
-        UG_ButtonSetFont( &win1, BTN_ID_0, &FONT_10X16);
-        UG_ButtonSetText(&win1, BTN_ID_0, "Button A");
-
-        
-
-        UG_WindowShow(&win1);
-
-        UG_Update();
-        btn1.state = BTN_STATE_PRESSED;
-        win1_objs[0].update(&win1, (UG_OBJECT*)&btn1);
-        wait_msec(100000);
-         UG_Update(); */
-        /* UG_FontSelect(&FONT_10X16);
-        UG_SetForecolor(C_WHITE);
-        UG_PutString(175, 0, "Max Ventas OS");
-        UG_ConsoleSetArea(0, 60, 480, 120);
-        UG_ConsoleSetBackcolor(C_BLACK);
-        UG_ConsoleSetForecolor(C_WHITE);
-        UG_ConsolePutString("Iniciando consola ... \n");
-        UG_ConsoleSetForecolor(C_GREEN);
-        UG_ConsolePutString("System Initialization Complete.\n"); */
     }
 
     printf("Processor # %c initialized \r\n", (proc_id + '0'));

@@ -13,5 +13,8 @@ https://github.com/BrianSidebotham/arm-tutorial-rpi/blob/master/part-5/armc-014/
 OpenGL
 https://github.com/LdB-ECM/Raspberry-Pi/tree/master/GLES2
 
+https://www.duskborn.com/posts/simple-c-command-line-parser/
+https://github.com/nothings/single_file_libs#argv
+
 #Explicacion mailbox
 http://magicsmoke.co.za/?p=284

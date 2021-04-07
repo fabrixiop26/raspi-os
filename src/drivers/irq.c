@@ -49,7 +49,7 @@ void enable_interrupt_controller()
 	put32(TIMER_CTRL, (local_timer_ctrl | (1 << 29)));
 	
 	//Configurar el enable de uart int segun tabla pagina 113 del manual. Desactivar temporalmente hasta obtener la idea del shell
-	put32(ENABLE_IRQS_2, UART_INTERRUPT);
+	//put32(ENABLE_IRQS_2, UART_INTERRUPT);
 
 }
 
