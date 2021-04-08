@@ -17,6 +17,7 @@ void sys_write(char * buf){
 //Crea un nuevo user thread
 //lo que retorna es pasado a x0 en ret_from_syscall
 int sys_fork(){
+	printf("Forking?");
 	return copy_process(0, 0, 0);
 }
 

@@ -70,6 +70,8 @@ void kernel_process()
     {
         printf("Error while moving process to user mode\n\r");
     }
+
+    printf("Kernel process ended\r\n");
 }
 
 //Muevo la pantalla 10 pixeles hacia abajo?
@@ -227,15 +229,17 @@ void kernel_main()
         timer_init();
         enable_interrupt_controller();
         enable_irq();
-        printf("Iniciando framebuffer\r\n");
         //espera 0.12s antes de inicializar el framebuffer
+        printf("Iniciando framebuffer\r\n");
         wait_msec(120000);
         fb_init();
         //Iniciar ugui
-        UG_Init(&gui, UserDrawPixel, 480, 320);
+        /* UG_Init(&gui, UserDrawPixel, 480, 320);
+        wait_msec(120000);
         UG_FontSelect(&FONT_16X26);
         UG_SetForecolor(C_YELLOW);
         UG_PutString(136, 0, "Max Ventas OS");
+        printf("To bien gui? \r\n");
         UG_ConsoleSetArea(0, 60, 480, 260);
         UG_SetForecolor(C_WHITE);
         UG_FontSelect(&FONT_10X16);
@@ -245,7 +249,7 @@ void kernel_main()
         UG_ConsoleSetForecolor(C_GREEN);
         UG_ConsolePutString("System Initialization Complete.\n");
         UG_ConsoleSetForecolor(C_WHITE);
-        UG_ConsolePutString(">");
+        UG_ConsolePutString(">"); */
     
         clock_rates();
 

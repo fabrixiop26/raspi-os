@@ -20,7 +20,7 @@
 #define SECTION_SHIFT			(PAGE_SHIFT + TABLE_SHIFT)
 
 #define PAGE_SIZE   			(1 << PAGE_SHIFT)	
-#define SECTION_SIZE			(1 << SECTION_SHIFT)	
+#define SECTION_SIZE			(1 << SECTION_SHIFT) // 2^21 = 2MB
 
 #define LOW_MEMORY              	(4 * SECTION_SIZE) //2*2^21 = 8Mb tamaño reservado para el OS y el init task stack
 #define BASE_MEMORY         ((LOW_MEMORY * 2) + (PAGE_SIZE * 3)) //tomar en cuenta el stack de los otros 3 cores que ocuparan 4kb de stack para cada core

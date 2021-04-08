@@ -89,6 +89,7 @@ void switch_to(struct task_struct * next)
 	print_task_info(next, next_task_pid);
 	printf("\n\r###################################\r\n");	
 	printf("\n\rCurrent task output: ");
+	set_pgd(next->mm.pgd);
 	//Context switch
 	cpu_switch_to(prev, next);
 }

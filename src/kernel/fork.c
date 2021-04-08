@@ -70,7 +70,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
 	printf("p->cpu_context.sp  = 0x%08x. (sp)\r\n", p->cpu_context.sp);
 	printf("Memory Pages occupied: %d/%d \r\n", current_pages, PAGING_PAGES);
 	printf("\n\r----------- Previous task -----------\r\n");
-	printf("previous_task->next_task  = 0x%08x.\r\n", previous_task->next_task);
+	printf("previous_task->next_task = 0x%08x -> 0x%08x.\r\n", previous_task,previous_task->next_task);
 	printf("Stack Pointer En Fork: 0x%08x \r\n", get_stack_pointer());
 
 	preempt_enable();
@@ -86,7 +86,7 @@ int move_to_user_mode(unsigned long start, unsigned long size, unsigned long pc)
 	//El pc de regs apunta a la funcion a llamar en user mode ya que de aqui al ejecutarse kernel_exit pc se copia a elr_el1 y de esta forma ir a la funcion al retornar
 	regs->pc = pc;
 	
-	//El sp apunta al fondo del stack (origin) de la nueva pagina
+	//El sp apunta al fondo del stack * 2 (origin) de la nueva pagina
 	regs->sp = 2 * PAGE_SIZE;
 
 	//Aloja una pagina para el usuario.
@@ -97,7 +97,7 @@ int move_to_user_mode(unsigned long start, unsigned long size, unsigned long pc)
 		return -1;
 	}
 
-	memcpy(code_page, start, size);
+	memcpy(start, code_page, size);
 	set_pgd(current->mm.pgd);
 	return 0;
 }

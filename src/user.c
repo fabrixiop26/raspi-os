@@ -19,6 +19,7 @@ void user_process()
 {
 	call_sys_write("User process\n\r");
 	int pid = call_sys_fork();
+	printf("To bien user process\r\n");
 	if (pid < 0) {
 		call_sys_write("Error during fork\n\r");
 		call_sys_exit();
