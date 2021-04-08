@@ -126,11 +126,6 @@ void exit_process(){
 			break;
 		}
 	}
-	printf("Proceso en p: 0x%08x borrando stack en: 0x%08x \r\n", p, p->stack);
-	if (current->stack) {
-		free_page(current->stack);
-	}
 	preempt_enable();
-	printf("Stack Pointer After Exit Process: 0x%08x \r\n", get_stack_pointer());
 	schedule();
 }

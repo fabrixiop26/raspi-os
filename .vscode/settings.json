@@ -18,6 +18,7 @@
         "scheduler.h": "c",
         "mm.h": "c",
         "fork.h": "c",
-        "mailbox.h": "c"
+        "mailbox.h": "c",
+        "user.h": "c"
     }
 }

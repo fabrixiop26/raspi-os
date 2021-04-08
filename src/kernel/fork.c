@@ -6,19 +6,18 @@
 #include "utils.h"
 
 //no crea cambios de contexto solo prepara el nuevo proceso
-int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, unsigned long stack)
+int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
 {
 	//Evitamos que el scheduler nos saque de aqui y asignamos su espacio de memoria al nuevo proceso que se usara como su stack
 	preempt_disable();
 	struct task_struct *p, *previous_task;
-	p = (struct task_struct *) get_free_page();
+
+	unsigned long page = allocate_kernel_page();
+	p = (struct task_struct *)page;
+	struct pt_regs *childregs = task_pt_regs(p);
 	//Si no hay mas espacio pues retornamos con error
 	if (!p)
 		return -1;
-
-	struct pt_regs *childregs = task_pt_regs(p);
-	memzero((unsigned long)childregs, sizeof(struct pt_regs));
-	memzero((unsigned long)&p->cpu_context, sizeof(struct cpu_context));
 
 	//Si somos un hilo de kernel tratamos normal al proceso
 	if (clone_flags & PF_KTHREAD) {
@@ -31,10 +30,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 		*childregs = *cur_regs;
 		//al x0 le asignamos 0 ya que sera el valor de retorno para el caller esto en el assembly nos permitira saber si estamos en el mismo hilo o en el nuevo tambien fn sera 0 para salirnos del ret_from_fork
 		childregs->regs[0] = 0;
-		//Apuntamos el sp del pt regs al fondo de la pagina usada para esta tarea
-		childregs->sp = stack + PAGE_SIZE;
-		//Guardamos en la tarea actual un a puntador a este stack para poder limpiarlo
-		p->stack = stack;
+		copy_virt_memory(p);
 	}
 
 	p->flags = clone_flags;
@@ -82,23 +78,27 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg,
 	return nr_tasks;
 }
 
-int move_to_user_mode(unsigned long pc)
+int move_to_user_mode(unsigned long start, unsigned long size, unsigned long pc)
 {
 	struct pt_regs *regs = task_pt_regs(current);
-	//Se limpia esta area de la memoria (4 safety)
-	memzero((unsigned long)regs, sizeof(*regs));
-	//El pc de regs apunta a la funcion a llamar en user mode ya que de aqui al ejecutarse kernel_exit pc se copia a elr_el1 y de esta forma ir a la funcion al retornar
-	regs->pc = pc;
 	//Al retornar de la exception estaremos en EL0
 	regs->pstate = PSR_MODE_EL0t;
-	unsigned long stack = get_free_page(); //allocate new user stack
-	if (!stack) {
+	//El pc de regs apunta a la funcion a llamar en user mode ya que de aqui al ejecutarse kernel_exit pc se copia a elr_el1 y de esta forma ir a la funcion al retornar
+	regs->pc = pc;
+	
+	//El sp apunta al fondo del stack (origin) de la nueva pagina
+	regs->sp = 2 * PAGE_SIZE;
+
+	//Aloja una pagina para el usuario.
+	unsigned long code_page = allocate_user_page(current, 0);
+
+	//Si no hay mas salimos con error
+	if (code_page == 0)	{
 		return -1;
 	}
-	//El sp apunta al fondo del stack (origin) de la nueva pagina
-	regs->sp = stack + PAGE_SIZE;
-	//El stack del proceso actual a punta a la nueva pagina para el usuario
-	current->stack = stack;
+
+	memcpy(code_page, start, size);
+	set_pgd(current->mm.pgd);
 	return 0;
 }
 

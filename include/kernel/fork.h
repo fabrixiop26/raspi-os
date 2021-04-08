@@ -23,14 +23,15 @@
  @param clone_flags Condiciones para la copia del proceso
  @param fn La funcion a copiar.
  @param arg Los argumentos de la funcion.
- @param priority La prioridad del proceso.
 */
-int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, unsigned long stack);
+int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg);
 /**
  * Movemos la ejecucion a modo usuario.
+ * @param start Donde empezar.
+ * @param size El tamaño.
  * @param pc La funcion en la cual empezar desde user mode
 */
-int move_to_user_mode(unsigned long pc);
+int move_to_user_mode(unsigned long start, unsigned long size, unsigned long pc);
 
 struct pt_regs * task_pt_regs(struct task_struct *tsk);
 

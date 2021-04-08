@@ -51,6 +51,10 @@ extern int get_el ( void );
  * Obtiene el valor del stack pointer.
  * @return La direccion donde se encuentra el stack pointer.
 */
+
+extern void set_pgd(unsigned long pgd);
+extern unsigned long get_pgd();
+
 extern int get_stack_pointer();
 
 #endif  /*_BOOT_H */
