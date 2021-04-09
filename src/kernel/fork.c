@@ -27,7 +27,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
 		//Como al pasar a user mode dejamos su stack vacio y sp apuntado encima de sus childregs entonces aseguramos que cur_regs apunta a lo mismo. Aqui se guarda elr_el1 y demas valores del kernel entry incluyendo x10 x11 y x12 donde estan las funciones
 		struct pt_regs * cur_regs = task_pt_regs(current);
 		//Al nuevo proceso le pasamos la misma info de pt regs que la del kernel
-		*childregs = *cur_regs;
+		*cur_regs = *childregs;
 		//al x0 le asignamos 0 ya que sera el valor de retorno para el caller esto en el assembly nos permitira saber si estamos en el mismo hilo o en el nuevo tambien fn sera 0 para salirnos del ret_from_fork
 		childregs->regs[0] = 0;
 		copy_virt_memory(p);

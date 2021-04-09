@@ -3,6 +3,8 @@
 #include "entry.h"
 #include "peripherals/irq.h"
 #include "utils.h"
+//#include "peripherals/timer.h"
+//#include "drivers/uart.h"
 
 const char *entry_error_messages[] = {
 	"SYNC_INVALID_EL1t",

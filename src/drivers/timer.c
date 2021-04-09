@@ -2,6 +2,7 @@
 #include "printf.h"
 #include "peripherals/timer.h"
 #include "kernel/scheduler.h"
+#include "drivers/timer.h"
 
 //20M (c.a 1s)
 const unsigned int interval = 200000;
@@ -39,6 +40,8 @@ void handle_timer_irq(void)
 	put32(TIMER_CS, TIMER_CS_M1);
 	timer_tick();
 }
+
+
 /* void handle_timer_irq( void ) 
 {
 	//printf("Timer interrupt received, Local Timer\n\r");

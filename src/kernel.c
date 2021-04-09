@@ -12,7 +12,7 @@
 #include "drivers/framebuffer.h"
 #include "drawutils.h"
 #include "drivers/mailbox.h"
-//#include "ugui.h"
+#include "ugui.h"
 #include "kernel/user.h"
 /**
  * \file kernel.c
@@ -139,10 +139,10 @@ void clock_rates()
 }
 
 //Custom drawing
-/* void UserDrawPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
+void UserDrawPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
 {
     drawPixel2(x, y, c);
-} */
+}
 
 /* void mainWindowsCallback(UG_MESSAGE *msg)
 {
@@ -191,7 +191,7 @@ void clock_rates()
     }
 } */
 
-//UG_GUI gui;
+UG_GUI gui;
 
 /* void ShowWindows()
 {
@@ -233,10 +233,8 @@ void kernel_main()
         printf("Iniciando framebuffer\r\n");
         wait_msec(120000);
         fb_init();
-
-        drawCircle(50,50,20,0x0f,0);
         //Iniciar ugui
-        /* UG_Init(&gui, UserDrawPixel, 480, 320);
+        UG_Init(&gui, UserDrawPixel, 480, 320);
         wait_msec(120000);
         UG_FontSelect(&FONT_16X26);
         UG_SetForecolor(C_YELLOW);
@@ -251,7 +249,7 @@ void kernel_main()
         UG_ConsoleSetForecolor(C_GREEN);
         UG_ConsolePutString("System Initialization Complete.\n");
         UG_ConsoleSetForecolor(C_WHITE);
-        UG_ConsolePutString(">"); */
+        UG_ConsolePutString(">");
     
         //clock_rates();
 
