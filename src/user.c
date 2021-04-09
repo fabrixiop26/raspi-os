@@ -1,6 +1,6 @@
 #include "kernel/user_sys.h"
 #include "kernel/user.h"
-#include "printf.h"
+#include "kernel/scheduler.h"
 
 //Funcion a llamar
 void loop(char* str)
@@ -19,17 +19,17 @@ void user_process()
 {
 	call_sys_write("User process\n\r");
 	int pid = call_sys_fork();
-	printf("To bien user process\r\n");
 	if (pid < 0) {
 		call_sys_write("Error during fork\n\r");
 		call_sys_exit();
 		return;
 	}
 	if (pid == 0){
-        //Hijo
-		loop("abcde");
+		call_sys_write("Hijo \r\n");
 	} else {
-        //Padre
-		loop("12345");
+		call_sys_write("Padre \r\n");
+		loop("1234");
+		//call_sys_exit();
 	}
+	call_sys_exit();
 }

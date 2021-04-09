@@ -232,7 +232,9 @@ void kernel_main()
         //espera 0.12s antes de inicializar el framebuffer
         printf("Iniciando framebuffer\r\n");
         wait_msec(120000);
-        //fb_init();
+        fb_init();
+
+        drawCircle(50,50,20,0x0f,0);
         //Iniciar ugui
         /* UG_Init(&gui, UserDrawPixel, 480, 320);
         wait_msec(120000);

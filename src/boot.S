@@ -30,12 +30,16 @@ master:
 	cmp x0, #3
 	beq el3
 
-	//ldr	x0, =HCR_VALUE
-	//msr	hcr_el2, x0
+	ldr	x0, =HCR_VALUE
+	msr	hcr_el2, x0
 
-	mrs	x0, hcr_el2
+	/* ldr	x0, =SCR_VALUE
+	msr	scr_el2, x0 */
+
+	/* mrs	x0, hcr_el2
 	orr	x0, x0, #(1<<31) // AArch64
-	msr	hcr_el2, x0 // SWIO hardwired on Pi3
+	msr	hcr_el2, x0 // SWIO hardwired on Pi3 */
+
 
 	mov 	x0, #SPSR_VALUE
 	msr	spsr_el2, x0
@@ -47,8 +51,8 @@ master:
 
 el3:
 
-	ldr	x0, =HCR_VALUE
-	msr	hcr_el2, x0
+	/* ldr	x0, =HCR_VALUE
+	msr	hcr_el2, x0 */
 
 	ldr	x0, =SCR_VALUE
 	msr	scr_el3, x0
@@ -74,6 +78,7 @@ el1_entry:
 	msr	ttbr0_el1, x0
 
 	bl 	__create_page_tables
+	
 	mov	x0, #VA_START			
 	add	sp, x0, #LOW_MEMORY
 
@@ -175,7 +180,7 @@ __create_page_tables:
 	create_block_map x0, x1, x2, x3, MMU_FLAGS, x4
 
 	/* Mapping device memory*/
-	mov 	x1, #DEVICE_BASE				// start mapping from device base address 
+	mov 	x1, #DEVICE_BASE					// start mapping from device base address 
 	ldr 	x2, =(VA_START + DEVICE_BASE)				// first virtual address
 	ldr	x3, =(VA_START + PHYS_MEMORY_SIZE - SECTION_SIZE)	// last virtual address
 	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4

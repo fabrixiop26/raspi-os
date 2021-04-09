@@ -172,7 +172,7 @@ el1_irq:
 el0_irq:
 	kernel_entry 0 
 	bl	handle_irq
-	kernel_exit 0
+	kernel_exit 0 
 
 //entramos en kernel entry y verificamos que la interrupccion fuese generada por svc sino es un error
 el0_sync:

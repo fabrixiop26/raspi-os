@@ -62,7 +62,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
 	previous_task->next_task = p; //La tarea anterior a punta a esta nueva
 	nr_tasks++; //Incremento el nr task para control
 
-	printf("\n\r----------- Task created -----------\r\n");
+	/* printf("\n\r----------- Task created -----------\r\n");
 	printf("\n\rStruct task allocated at 0x%08x.\r\n", p);
 	printf("p->cpu_context.x19 = 0x%08x. (fn)\r\n", p->cpu_context.x19);
 	printf("p->cpu_context.x20 = 0x%08x. (arg)\r\n", p->cpu_context.x20);
@@ -71,7 +71,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
 	printf("Memory Pages occupied: %d/%d \r\n", current_pages, PAGING_PAGES);
 	printf("\n\r----------- Previous task -----------\r\n");
 	printf("previous_task->next_task = 0x%08x -> 0x%08x.\r\n", previous_task,previous_task->next_task);
-	printf("Stack Pointer En Fork: 0x%08x \r\n", get_stack_pointer());
+	printf("Stack Pointer En Fork: 0x%08x \r\n", get_stack_pointer()); */
 
 	preempt_enable();
 	//Devuelo el "PID"

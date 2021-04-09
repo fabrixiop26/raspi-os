@@ -22,8 +22,8 @@
 #define PAGE_SIZE   			(1 << PAGE_SHIFT)	
 #define SECTION_SIZE			(1 << SECTION_SHIFT) // 2^21 = 2MB
 
-#define LOW_MEMORY              	(4 * SECTION_SIZE) //2*2^21 = 8Mb tamaño reservado para el OS y el init task stack
-#define BASE_MEMORY         ((LOW_MEMORY * 2) + (PAGE_SIZE * 3)) //tomar en cuenta el stack de los otros 3 cores que ocuparan 4kb de stack para cada core
+#define LOW_MEMORY              	(4 * SECTION_SIZE) //4*2^21 = 8Mb tamaño reservado para el OS y el init task stack
+#define BASE_MEMORY         ((LOW_MEMORY) + (PAGE_SIZE * 3)) //tomar en cuenta el stack de los otros 3 cores que ocuparan 4kb de stack para cada core
 
 //Primer byte fisico donde comienza MMIO de. De esta direccion en adelante es reservado
 //recordar que esta el framebuffer y debo tmbn evitarlo?
@@ -70,11 +70,11 @@ void free_page(unsigned long p);
 void map_page(struct task_struct *task, unsigned long va, unsigned long page);
 /**
  * Copia una direccion de memoria a otra.
- * @param dst La nueva ubicacion en memoria.
  * @param src La direccion actual de memoria.
+ * @param dst La nueva ubicacion en memoria.
  * @param n El tamaño del dato.
 */
-void memcpy(unsigned long dst, unsigned long src, unsigned long n);
+void memcpy(unsigned long src, unsigned long dest, unsigned long n);
 /**
  * Copiar un proceso a memoria virtual.
  * @param dst El proceso a copiar.
