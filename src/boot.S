@@ -34,8 +34,8 @@ master:
 	//msr	hcr_el2, x0
 
 	mrs	x0, hcr_el2
-	orr	x0, x0, #(1<<31)
-	msr	hcr_el2, x0
+	orr	x0, x0, #(1<<31) // AArch64
+	msr	hcr_el2, x0 // SWIO hardwired on Pi3
 
 	mov 	x0, #SPSR_VALUE
 	msr	spsr_el2, x0

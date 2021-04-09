@@ -15,6 +15,6 @@
 //Direccion de perifericos locales
 //creo toca cambiar por el VA
 #define LOCAL_PERIPHERAL_BASE 0x40000000
-#define PERIPHERAL_BASE		(VA_START + LOCAL_PERIPHERAL_BASE)
+#define PERIPHERAL_BASE		LOCAL_PERIPHERAL_BASE
 
 #endif  /*_P_BASE_H */
