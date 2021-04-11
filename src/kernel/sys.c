@@ -2,6 +2,7 @@
 #include "printf.h"
 #include "kernel/scheduler.h"
 #include "mm.h"
+#include "utils.h"
 
 /**
  * \file sys.c
@@ -15,16 +16,8 @@ void sys_write(char * buf){
 
 //Crea un nuevo user thread
 //lo que retorna es pasado a x0 en ret_from_syscall
-int sys_clone(unsigned long stack){
-	return copy_process(0, 0, 0, stack);
-}
-
-unsigned long sys_malloc(){
-	unsigned long addr = get_free_page();
-	if (!addr) {
-		return -1;
-	}
-	return addr;
+int sys_fork(){
+	return copy_process(0, 0, 0);
 }
 
 void sys_exit(){
@@ -32,4 +25,4 @@ void sys_exit(){
 }
 
 //Lista con apuntadores a los llamados
-void * const sys_call_table[] = {sys_write, sys_malloc, sys_clone, sys_exit};
+void * const sys_call_table[] = {sys_write, sys_fork, sys_exit};

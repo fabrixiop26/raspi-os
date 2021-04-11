@@ -12,12 +12,26 @@ ENTRY(_start)
 
 SECTIONS
 {
-    .text.boot : { *(.text.boot) }
-    .text :  { *(.text) }
-    .rodata : { *(.rodata) }
-    .data : { *(.data) }
-    . = ALIGN(0x8);
-    bss_begin = .;
-    .bss : { *(.bss*) } 
-    bss_end = .;
+	. = 0xffff000000080000;
+	.text.boot : { *(.text.boot) }
+	. = ALIGN(0x00001000);
+	user_begin = .;
+	.text.user : { build/kernel/user* (.text) }
+	.rodata.user : { build/kernel/user* (.rodata) }
+	.data.user : { build/kernel/user* (.data) }
+	.bss.user : { build/kernel/user* (.bss) }
+	user_end = .;
+	.text :  { *(.text) }
+	.rodata : { *(.rodata) }
+	.data : { *(.data) }
+	. = ALIGN(0x8);
+	bss_begin = .;
+	.bss : { *(.bss*) } 
+	bss_end = .;
+	. = ALIGN(0x00001000);
+	idmap_dir = .;
+	.data.idmapd : {. += (5* (1 << 12));}/*Esto son 3 * 4kb necesito 1 pdu mas*/
+	. = ALIGN(0x00001000);
+	pg_dir = .;
+	.data.pgd : { . += (5 * (1 << 12)); }/*Esto son 3 * 4kb necesito 1 pdu mas*/
 }

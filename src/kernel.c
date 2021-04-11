@@ -1,3 +1,6 @@
+#include <stddef.h>
+#include <stdint.h>
+
 #include "drivers/uart.h"
 #include "drivers/irq.h"
 #include "printf.h"
@@ -10,38 +13,12 @@
 #include "drawutils.h"
 #include "drivers/mailbox.h"
 #include "ugui.h"
+#include "kernel/user.h"
 /**
  * \file kernel.c
  * \brief Funciones principales del kernel
  */
 static unsigned int semaphore = 0; ///< variable comun entre cpus para control*/
-
-/* void user_process1(char *array)
-{
-    printf("Stack Pointer Proceso 1: 0x%08x \r\n", get_stack_pointer());
-    char buf[2] = {0};
-    int cont = 200;
-    while (cont >= 0)
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            buf[0] = array[i];
-            call_sys_write(buf);
-            delay(100000);
-        }
-        cont--;
-    }
-} */
-
-void user_process1(char *array)
-{
-    while (1)
-    {
-
-        printf(array);
-        delay(100000);
-    }
-}
 
 void draw()
 {
@@ -80,55 +57,21 @@ void draw()
     }
 }
 
-//Todo el codigo aqui tiene su stack sin embargo los syscalls se hacen en el kernel process ya que deben cambiar de el0 a el1
-void user_process()
-{
-    //El equivalente a sprintf
-    //el buffer debe tener tamaño indicado
-    printf("Stack Pointer User Process: 0x%08x \r\n", get_stack_pointer());
-    char buf[30] = {0};
-    tfp_sprintf(buf, "User process started\n\r");
-    call_sys_write("User Process Started \r\n");
-    unsigned long stack = call_sys_malloc();
-    if (stack < 0)
-    {
-        printf("Error while allocating stack for process 1\n\r");
-        return;
-    }
-    int err = call_sys_clone((unsigned long)&user_process1, (unsigned long)"12345", stack);
-    if (err < 0)
-    {
-        printf("Error while clonning process 1\n\r");
-        return;
-    }
-    stack = call_sys_malloc();
-    if (stack < 0)
-    {
-        printf("Error while allocating stack for process 2\n\r");
-        return;
-    }
-    err = call_sys_clone((unsigned long)&user_process1, (unsigned long)"abcde", stack);
-    if (err < 0)
-    {
-        printf("Error while clonning process 2\n\r");
-        return;
-    }
-    printf("\r\nTerminado creacion de 2 procesos en user mode \r\n");
-    printf("Stack Pointer Fin User Process: 0x%08x \r\n", get_stack_pointer());
-    call_sys_exit();
-}
-
 //Creo el proceso en el kernel y el mismo se encarga de pasarme a user mode
 //Se devuelve a la funcion que lo llamo
 void kernel_process()
 {
     printf("Kernel process started. EL %d\r\n", get_el());
-    int err = move_to_user_mode((unsigned long)&user_process);
+    unsigned long begin = (unsigned long)&user_begin;
+    unsigned long end = (unsigned long)&user_end;
+    unsigned long process = (unsigned long)&user_process;
+    int err = move_to_user_mode(begin, end - begin, process - begin);
     if (err < 0)
     {
         printf("Error while moving process to user mode\n\r");
     }
-    printf("Stack Pointer Kernel Process: 0x%08x \r\n", get_stack_pointer());
+
+    printf("Kernel process ended\r\n");
 }
 
 //Muevo la pantalla 10 pixeles hacia abajo?
@@ -201,7 +144,7 @@ void UserDrawPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
     drawPixel2(x, y, c);
 }
 
-void mainWindowsCallback(UG_MESSAGE *msg)
+/* void mainWindowsCallback(UG_MESSAGE *msg)
 {
     if (msg->type == MSG_TYPE_OBJECT)
     {
@@ -218,9 +161,9 @@ void mainWindowsCallback(UG_MESSAGE *msg)
             }
         }
     }
-}
+} */
 
-void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1, UG_COLOR c2, unsigned char cond)
+/* void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1, UG_COLOR c2, unsigned char cond)
 {
     UG_U16 sec;
     UG_U8 j, tog;
@@ -246,11 +189,11 @@ void ShowLoadingCircle(UG_U16 x, UG_U16 y, UG_U16 r, UG_COLOR c1, UG_COLOR c2, u
             wait_msec(100000);
         }
     }
-}
+} */
 
 UG_GUI gui;
 
-void ShowWindows()
+/* void ShowWindows()
 {
     UG_GUI gui;
     UG_Init(&gui, UserDrawPixel, P_WIDTH, P_HEIGHT);
@@ -270,33 +213,28 @@ void ShowWindows()
     UG_TextboxSetAlignment(&win, TXB_ID_0, ALIGN_TOP_CENTER);
     UG_WindowShow(&win);
     UG_Update();
-}
+} */
 
 /**
 *  Punto principal de entrada del programa.
 *  @param proc_id Identificador de la cpu
 */
-void kernel_main(char proc_id)
+void kernel_main()
 {
-    //Wait for CPU #0 to finish initalizacion of uart
-    while (proc_id != semaphore)
-    {
-    }
     //only the master (processor id = 0) initialize uart
-    if (proc_id == 0)
-    {
+    
         uart_init();
-        init_printf(0, putc);
+        init_printf(NULL, putc);
         irq_vector_init();
         timer_init();
         enable_interrupt_controller();
         enable_irq();
-        printf("Iniciando framebuffer\r\n");
         //espera 0.12s antes de inicializar el framebuffer
+        printf("Iniciando framebuffer\r\n");
         wait_msec(120000);
         fb_init();
         //Iniciar ugui
-        UG_Init(&gui, UserDrawPixel, 480,320);
+        UG_Init(&gui, UserDrawPixel, 480, 320);
         UG_FontSelect(&FONT_16X26);
         UG_SetForecolor(C_YELLOW);
         UG_PutString(136, 0, "Max Ventas OS");
@@ -310,40 +248,22 @@ void kernel_main(char proc_id)
         UG_ConsolePutString("System Initialization Complete.\n");
         UG_ConsoleSetForecolor(C_WHITE);
         UG_ConsolePutString(">");
-    }
+    
+        //clock_rates();
 
-    printf("Processor # %c initialized \r\n", (proc_id + '0'));
-
-    //Aumento la variable de control para que la siguiente cpu salga del bucle
-    semaphore++;
-
-    //Solo la cpu 0 tiene permitido quedarse aqui los demas terminan
-    //y se van a la linea de assembly del proc_hang
-    if (proc_id == 0)
-    {
-        // Wait for everyone else to finish
-        while (semaphore != 4)
-        {
-        }
-        int el = get_el();
-        printf("Exception level: %d \r\n", el); //\r mueve el "cursor al principio de la linea"
-        //Creamos nuevo kernel thread
-        /* int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0, 0);
+        int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0);
         if (res < 0)
         {
             printf("Error while starting kernel process");
             return;
         }
-        printf("\r\nCreado kernel_process \r\n"); */
-        //draw_test();
-        //offset_screen();
-        clock_rates();
+
         //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto
         while (1)
         {
-            schedule();
+            //schedule();
         }
-    }
+    
     //Core 1 just draws
     /* if(proc_id == 1){
         while (semaphore != 4)

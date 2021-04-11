@@ -82,13 +82,14 @@ void switch_to(struct task_struct * next)
 	//Si no es la misma pued guardamos la actual como la anterior y la actual sera la siguiente
 	struct task_struct * prev = current;
 	current = next;
-	printf("\n\r\n\r######## - Task switch - #########\r\n");
+	/* printf("\n\r\n\r######## - Task switch - #########\r\n");
 	printf("Current Task -> ");
 	print_task_info(prev, current_task_pid);
 	printf("New Task -> ");
 	print_task_info(next, next_task_pid);
 	printf("\n\r###################################\r\n");	
-	printf("\n\rCurrent task output: ");
+	printf("\n\rCurrent task output: "); */
+	set_pgd(next->mm.pgd);
 	//Context switch
 	cpu_switch_to(prev, next);
 }
@@ -126,11 +127,6 @@ void exit_process(){
 			break;
 		}
 	}
-	printf("Proceso en p: 0x%08x borrando stack en: 0x%08x \r\n", p, p->stack);
-	if (current->stack) {
-		free_page(current->stack);
-	}
 	preempt_enable();
-	printf("Stack Pointer After Exit Process: 0x%08x \r\n", get_stack_pointer());
 	schedule();
 }

@@ -39,7 +39,7 @@ extern struct task_struct *initial_task;
 */
 extern int nr_tasks;
 /**
- * Numero de paginas ocupadas en la memoria.
+ * Numero de paginas ocupadas en la memoria. (DEBUG ONLY)
 */
 extern int current_pages;
 
@@ -65,6 +65,36 @@ struct cpu_context {
 	unsigned long pc;
 };
 
+//Nuemero de maximo de paginas para un proceso
+#define MAX_PROCESS_PAGES			16
+
+/**
+ * @struct user_page
+ * @brief Tabla para mapear entre direccion virtual y fisica.
+ * @var user_page::phys_addr
+ * La direccion fisica.
+ * @var user_page::virt_addr
+ * La direccion virtual.
+*/
+struct user_page {
+	unsigned long phys_addr;
+	unsigned long virt_addr;
+};
+
+/**
+ * @struct mm_struct
+ * @brief La estructura de la memoria.
+ * @var mm_struct::pgd
+ * Direccion de la tabla PGD (Page Global Directory)
+*/
+struct mm_struct {
+	unsigned long pgd;
+	int user_pages_count;
+	struct user_page user_pages[MAX_PROCESS_PAGES];
+	int kernel_pages_count;
+	unsigned long kernel_pages[MAX_PROCESS_PAGES];
+};
+
 /**
  * @struct task_struct
  @brief Estructura basica para cada proceso.
@@ -87,8 +117,8 @@ struct task_struct {
 	long counter;
 	long priority;
 	long preempt_count;
-	unsigned long stack;
 	unsigned long flags;
+	struct mm_struct mm;
 	struct task_struct *next_task;
 };
 
@@ -127,8 +157,9 @@ void print_task_info(struct task_struct* t, int pid);
 
 #define INIT_TASK \
 /*cpu_context*/	{ {0,0,0,0,0,0,0,0,0,0,0,0,0}, \
-/* state etc */	0,0,1, 0,0,PF_KTHREAD,0 \
-}
+/* state etc */	0,0,15, 0,PF_KTHREAD,\
+/* mm */  { 0, 0, {{0}}, 0, {0}}, \
+/* pointer */ 0}
 
 #endif
 #endif

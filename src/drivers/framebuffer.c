@@ -67,7 +67,7 @@ void fb_init()
         pitch = mbox[33];       // Number of bytes per line
         isrgb = mbox[24];       // Pixel order
         fb_size = mbox[29];    //Obtengo el tamaño
-        fb = (unsigned char *)((long)mbox[28]);
+        fb = (unsigned char *)((long)mbox[28] + VA_START);
         printf("####Framebuffer Info:###### \r\n");
         printf("Framebuffer address: 0x%08x \r\n", fb);
         printf("Physical Width: %d\r\n", width);
