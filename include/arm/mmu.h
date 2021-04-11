@@ -1,6 +1,7 @@
 #ifndef _MMU_H
 #define _MMU_H
 
+//En el descriptor de la entrada de una tabla el bit 0 indica si es valida y el bit 1 indica si apunta a otra tabla o si apunta a una seccion/direccion fisica
 #define MM_TYPE_PAGE_TABLE		0x3
 #define MM_TYPE_PAGE 			0x3
 #define MM_TYPE_BLOCK			0x1
@@ -8,15 +9,17 @@
 #define MM_ACCESS_PERMISSION		(0x01 << 6) 
 
 /*
- * Memory region attributes:
- *
- *   n = AttrIndx[2:0]
- *			n	MAIR
- *   DEVICE_nGnRnE	000	00000000
- *   NORMAL_NC		001	01000100
+  Memory region attributes:
+ 
+    n = AttrIndx[2:0]
+ 			n	MAIR
+    DEVICE_nGnRnE	000	00000000
+    NORMAL_NC		001	01000100 = 0x44
  */
+//Indices para descriptores de bloques
 #define MT_DEVICE_nGnRnE 		0x0
 #define MT_NORMAL_NC			0x1
+//Valores a guardar en los primers 2 slots de mair_el1
 #define MT_DEVICE_nGnRnE_FLAGS		0x00
 #define MT_NORMAL_NC_FLAGS  		0x44
 #define MAIR_VALUE			(MT_DEVICE_nGnRnE_FLAGS << (8 * MT_DEVICE_nGnRnE)) | (MT_NORMAL_NC_FLAGS << (8 * MT_NORMAL_NC))

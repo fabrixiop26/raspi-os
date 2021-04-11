@@ -75,16 +75,20 @@ el1_entry:
 
 	bl	__create_idmap
 	adrp	x0, idmap_dir
+	//esto guarda el usuario
 	msr	ttbr0_el1, x0
 
 	bl 	__create_page_tables
 	
+	//Toca tener esto en cuenta para los stacks si implemento 
+	//multicore
 	mov	x0, #VA_START			
 	add	sp, x0, #LOW_MEMORY
 
+	//pgd se guarda en ttbr1_el1
 	adrp	x0, pg_dir				
 	msr	ttbr1_el1, x0
-
+	//Cada pagina es 4kb
 	ldr	x0, =(TCR_VALUE)		
 	msr	tcr_el1, x0
 
@@ -104,16 +108,29 @@ el1_entry:
 	create_table_entry \tbl, \virt, PUD_SHIFT, \tmp1, \tmp2
 	.endm
 
+	//Aloja una nueva entrada a la tabla ya sea pgd o pud
+	//tbl: a pointer to a memory region were new table has to be allocated.
+	//vrit virtual address that we are currently mapping.
+	//shift that we need to apply to the virtual address in order to extract current table index. (39 in case of PGD and 30 in case of PUD)
+	//tmp1, tmp2 registros temporarios
 	.macro	create_table_entry, tbl, virt, shift, tmp1, tmp2
 	lsr	\tmp1, \virt, #\shift
 	and	\tmp1, \tmp1, #PTRS_PER_TABLE - 1			// table index
-	add	\tmp2, \tbl, #PAGE_SIZE
-	orr	\tmp2, \tmp2, #MM_TYPE_PAGE_TABLE	
-	str	\tmp2, [\tbl, \tmp1, lsl #3]
+	add	\tmp2, \tbl, #PAGE_SIZE					//nueva tabla contigua a la direccion
+	orr	\tmp2, \tmp2, #MM_TYPE_PAGE_TABLE	//al descriptor le ponemos 11 al final
+	str	\tmp2, [\tbl, \tmp1, lsl #3] // al indice se multiplica por 8 como ya que asi accedemos a la posicion correcta como en un arreglo
 	add	\tbl, \tbl, #PAGE_SIZE					// next level table page
 	.endm
 
+	//tbl - a pointer to the PMD table.
+	//phys - the start of the physical region to be mapped	
+	//start - virtual address of the first section to be mapped.
+	//end - virtual address of the last section to be mapped.
+	//flags - flags that need to be copied into lower attributes of the block descriptor.
+	//tmp1 - temprary register
 	.macro	create_block_map, tbl, phys, start, end, flags, tmp1
+	//usamos 21 para la seccion aka 2MB y start y end son indices
+	//de la PMD table
 	lsr	\start, \start, #SECTION_SHIFT
 	and	\start, \start, #PTRS_PER_TABLE - 1			// table index
 	lsr	\end, \end, #SECTION_SHIFT
@@ -127,6 +144,65 @@ el1_entry:
 	cmp	\start, \end
 	b.ls	9999b
 	.endm
+
+__create_idmap:
+	mov	x29, x30
+	
+	adrp	x0, idmap_dir
+	mov	x1, #PG_DIR_SIZE
+	bl	memzero
+
+	adrp	x0, idmap_dir
+	mov	x1, xzr //0
+	
+					//tbl virt temp1 temp2
+	create_pgd_entry	x0, x1, x2, x3
+	//al final x0 apunta a pmd
+	mov	x1, xzr
+	mov	x2, xzr
+	ldr	x3, =(PHYS_MEMORY_SIZE) //sumarle lo extra quiza?
+	//tbl, phys, start, end, flags, tmp1
+	create_block_map x0, x1, x2, x3, MMU_FLAGS, x4
+
+	mov	x30, x29
+	ret
+
+__create_page_tables:
+	mov	x29, x30						// save return address
+
+	//limpiar el area inicial de las paginas
+	adrp	x0, pg_dir
+	mov	x1, #PG_DIR_SIZE //3 tablas de 4kb (5 en teoria para lo que quiero)
+	bl 	memzero
+
+	adrp	x0, pg_dir
+	mov	x1, #VA_START 
+	//tbl, virt, tmp1, tmp2
+	create_pgd_entry x0, x1, x2, x3
+	//tbl (x0) termina apuntando a pmd (3 level table)
+
+	/* Mapping kernel and init stack*/
+	mov 	x1, xzr							// start mapping from physical offset 0
+	mov 	x2, #VA_START						// first virtual address
+	ldr	x3, =(VA_START + DEVICE_BASE - SECTION_SIZE)		// last virtual address
+	create_block_map x0, x1, x2, x3, MMU_FLAGS, x4
+
+	/* Mapping device memory*/
+	mov 	x1, #DEVICE_BASE					// start mapping from device base address 
+	ldr 	x2, =(VA_START + DEVICE_BASE)				// first virtual address
+	ldr	x3, =(VA_START + PHYS_MEMORY_SIZE - SECTION_SIZE)	// last virtual address
+				//tbl, phys, start, end, flags, tmp1
+	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4
+
+	//Crear una nueva pdu y luego llenarla con 0x4000000-0x80000000
+	//cambiar el linker para esto y el idmap
+
+	mov	x30, x29						// restore return address
+	ret
+
+proc_hang:
+	wfe
+    b proc_hang
 
 //el kernel se carga en address 0 asi que defino el stack pointer a 4MB
 //para que el stack no sobreescriba el kernel image
@@ -142,55 +218,6 @@ el1_entry:
 	add x1, x1, x4	// add to base address (#LOW_MEMORY * 8 32mb)
 	mov	sp, x1
 	bl	kernel_main			// call 'kernel_main' passing processor id through 'x0' */
-
-__create_idmap:
-	mov	x29, x30
-	
-	adrp	x0, idmap_dir
-	mov	x1, #PG_DIR_SIZE
-	bl	memzero
-
-	adrp	x0, idmap_dir
-	mov	x1, xzr
-	create_pgd_entry	x0, x1, x2, x3
-
-	mov	x1, xzr
-	mov	x2, xzr
-	ldr	x3, =(PHYS_MEMORY_SIZE)
-	create_block_map x0, x1, x2, x3, MMU_FLAGS, x4
-
-	mov	x30, x29
-	ret
-
-__create_page_tables:
-	mov	x29, x30						// save return address
-
-	adrp	x0, pg_dir
-	mov	x1, #PG_DIR_SIZE
-	bl 	memzero
-
-	adrp	x0, pg_dir
-	mov	x1, #VA_START 
-	create_pgd_entry x0, x1, x2, x3
-
-	/* Mapping kernel and init stack*/
-	mov 	x1, xzr							// start mapping from physical offset 0
-	mov 	x2, #VA_START						// first virtual address
-	ldr	x3, =(VA_START + DEVICE_BASE - SECTION_SIZE)		// last virtual address
-	create_block_map x0, x1, x2, x3, MMU_FLAGS, x4
-
-	/* Mapping device memory*/
-	mov 	x1, #DEVICE_BASE					// start mapping from device base address 
-	ldr 	x2, =(VA_START + DEVICE_BASE)				// first virtual address
-	ldr	x3, =(VA_START + PHYS_MEMORY_SIZE - SECTION_SIZE)	// last virtual address
-	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4
-
-	mov	x30, x29						// restore return address
-	ret
-
-proc_hang:
-	wfe
-    b proc_hang
 
 //Para entender uso de registros
 //https://developer.arm.com/documentation/den0024/a/The-ABI-for-ARM-64-bit-Architecture/Register-use-in-the-AArch64-Procedure-Call-Standard/Parameters-in-general-purpose-registers

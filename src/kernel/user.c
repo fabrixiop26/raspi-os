@@ -30,7 +30,6 @@ void user_process()
 		call_sys_write("Hijo \r\n");
 	} else {
 		call_sys_write("Padre \r\n");
-		loop("1234");
 		//call_sys_exit();
 	}
 	call_sys_exit();

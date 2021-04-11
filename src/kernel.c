@@ -235,11 +235,9 @@ void kernel_main()
         fb_init();
         //Iniciar ugui
         UG_Init(&gui, UserDrawPixel, 480, 320);
-        wait_msec(120000);
         UG_FontSelect(&FONT_16X26);
         UG_SetForecolor(C_YELLOW);
         UG_PutString(136, 0, "Max Ventas OS");
-        printf("To bien gui? \r\n");
         UG_ConsoleSetArea(0, 60, 480, 260);
         UG_SetForecolor(C_WHITE);
         UG_FontSelect(&FONT_10X16);
@@ -263,7 +261,7 @@ void kernel_main()
         //No hay necesidad de retransmitir ya que tengo configurado las interrupciones de uart para esto
         while (1)
         {
-            schedule();
+            //schedule();
         }
     
     //Core 1 just draws

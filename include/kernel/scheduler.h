@@ -84,6 +84,8 @@ struct user_page {
 /**
  * @struct mm_struct
  * @brief La estructura de la memoria.
+ * @var mm_struct::pgd
+ * Direccion de la tabla PGD (Page Global Directory)
 */
 struct mm_struct {
 	unsigned long pgd;

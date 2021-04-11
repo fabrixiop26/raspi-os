@@ -16,10 +16,10 @@ SECTIONS
 	.text.boot : { *(.text.boot) }
 	. = ALIGN(0x00001000);
 	user_begin = .;
-	.text.user : { build/user* (.text) }
-	.rodata.user : { build/user* (.rodata) }
-	.data.user : { build/user* (.data) }
-	.bss.user : { build/user* (.bss) }
+	.text.user : { build/kernel/user* (.text) }
+	.rodata.user : { build/kernel/user* (.rodata) }
+	.data.user : { build/kernel/user* (.data) }
+	.bss.user : { build/kernel/user* (.bss) }
 	user_end = .;
 	.text :  { *(.text) }
 	.rodata : { *(.rodata) }
@@ -30,8 +30,8 @@ SECTIONS
 	bss_end = .;
 	. = ALIGN(0x00001000);
 	idmap_dir = .;
-	.data.idmapd : {. += (3* (1 << 12));}
+	.data.idmapd : {. += (5* (1 << 12));}/*Esto son 3 * 4kb necesito 1 pdu mas*/
 	. = ALIGN(0x00001000);
 	pg_dir = .;
-	.data.pgd : { . += (3 * (1 << 12)); }
+	.data.pgd : { . += (5 * (1 << 12)); }/*Esto son 3 * 4kb necesito 1 pdu mas*/
 }
