@@ -20,6 +20,7 @@ Bits [0 - 11] contain an offset in the physical page. MMU uses this offset to de
     Si los ultimos 16 bits son 1 se usa la direccion guardada en ttbr1_el1 si todo es 0 se usa ttbr0_el1. Todas las direcciones de kernel absolutas  deben comenzar con 0xffff haciendo pensar que la direccion de la imagen del OS esta cargada en VA_START
 */
 #define VA_START 			0xffff000000000000
+#define VA_START_LOCAL      0xffff008000000000 //pgd index sera 1 aqui 000000001
 //Tamaño de la memoria fisica
 #define PHYS_MEMORY_SIZE 	0x40000000 //1gb	
 
@@ -31,6 +32,7 @@ Bits [0 - 11] contain an offset in the physical page. MMU uses this offset to de
 
 //2^9 = 512 indices. Cada pagina en el virtual addresss tiene 9 bits a expecion de la del offset que contiene 12 y donde cada entrada en una pagina son 8bytes (64 bits) entonces cada pagina tiene un tamaño de 512 * 8 = 4096 bytes = 4Kb
 #define PAGE_SIZE   			(1 << PAGE_SHIFT)
+#define VA_LOCAL_OFFSET         (PAGE_SIZE * 3) //como ya hay 3 tablas al final de la tercerca comienza la nueva
 //Se usa para eliminar una tabla la ultima tabla (PTE) al mapear 2Mb de bloques. Se usa para mapear largas porciones contiguas de memoria (Secciones) 9 bits del pte + 9 bits del page offset
 #define SECTION_SIZE			(1 << SECTION_SHIFT) // 2^21 = 2MB
 

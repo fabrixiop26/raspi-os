@@ -18,7 +18,9 @@ void timer_init(void)
 	//Asiganos el valor del registro de comperacion para el timer numero 1
 	//Cuando los ultimos 32 bits del timer sean iguales al valor de este registro se disparara la señal
 	put32(TIMER_C1, threshold);
-	//put32(TIMER_CTRL, ((1<<28) | interval));
+	printf("Quiza?\n\r");
+	//parte local
+	put32(TIMER_CTRL, ((1<<28) | interval));
 }
 
 /* void timer_init(void){

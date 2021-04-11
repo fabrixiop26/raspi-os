@@ -1,6 +1,10 @@
 #include "kernel/user_sys.h"
 #include "kernel/user.h"
 #include "kernel/scheduler.h"
+#include "utils.h"
+#include "peripherals/timer.h"
+
+const unsigned int interval2 = 200000;
 
 //Funcion a llamar
 void loop(char* str)
@@ -19,7 +23,8 @@ void loop(char* str)
 
 void user_process() 
 {
-	call_sys_write("User process\n\r");
+	call_sys_write("User process \n\r");
+	//put32(TIMER_CTRL, ((1<<28) | interval2));
 	int pid = call_sys_fork();
 	if (pid < 0) {
 		call_sys_write("Error during fork\n\r");
