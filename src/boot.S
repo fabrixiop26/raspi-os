@@ -126,19 +126,6 @@ el1_entry:
 	add	\tbl, \tbl, \tmp2					// next level table page
 	.endm
 
-	//Creada especifica para local peripherals exp es 3 y luego sera 4
-	.macro	create_table_entry_2, tbl, virt, shift, tmp1, tmp2, exp, pg
-	lsr	\tmp1, \virt, #\shift
-	and	\tmp1, \tmp1, #PTRS_PER_TABLE - 1			// table index
-	mul \tmp2, \exp, \pg					//multiplico el page size x exp
-	add	\tmp2, \tbl, \tmp2				//nueva tabla en a la direccion
-	orr	\tmp2, \tmp2, #MM_TYPE_PAGE_TABLE	//al descriptor le ponemos 11 al final
-	str	\tmp2, [\tbl, \tmp1, lsl #3] // al indice se multiplica por 8 como ya que asi accedemos a la posicion correcta como en un arreglo
-	mul \tmp2, \exp, \pg
-	add	\tbl, \tbl, \tmp2				// next level table page tbl + 3 * PG
-	.endm
-
-
 	//tbl - a pointer to the PMD table.
 	//phys - the start of the physical region to be mapped	
 	//start - virtual address of the first section to be mapped.
@@ -247,31 +234,6 @@ __create_page_tables:
 	ldr    x3, =(VA_START + LAST_LOCAL_PERIPHERAL - SECTION_SIZE)    // last virtual address
 	mov x4, #0
 	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4
-
-	/*Creando nueva entrada en PGD y nueva tabla PDU y PMD */
-	/* adrp	x0, pg_dir
-	add    x0, x0, #VA_LOCAL_OFFSET
-	mov    x1, #VA_START //muevo la va inicial
-	orr    x1, x1, #(1 << 39) //le pongo 000000001 como indice de pgd
-	mov    x4, #3 //indice inicial
-	mov    x5, #PAGE_SIZE
-
-	//tbl, virt, shift, tmp1, tmp2, exp, pg
-	create_table_entry_2 x0, x1, PGD_SHIFT, x2, x3, x4, x5
-	//x0 apunta a pdu, x1 le pongo en 1 ya para que ponga contiguo al pmd
-	mov x4, #1 
-	create_table_entry_2 x0, x1, PUD_SHIFT, x2, x3, x4, x5 */
-	//x0 apunta al nuevo pmd
-
-	/* Mapear Local Peripherals */
-	/* mov 	x1, #LOCAL_PERIPHERAL_BASE
-	ldr     x2, =(VA_START + LOCAL_PERIPHERAL_BASE) //first va
-	ldr    x3, =(VA_START + LAST_LOCAL_PERIPHERAL - SECTION_SIZE)    // last virtual address
-	mov x4, #0
-	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4 */
-
-	//Crear una nueva pdu y luego llenarla con 0x4000000-0x80000000
-	//cambiar el linker para esto y el idmap
 
 	mov	x30, x29						// restore return address
 	ret
