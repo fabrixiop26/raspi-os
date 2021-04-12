@@ -30,8 +30,8 @@ SECTIONS
 	bss_end = .;
 	. = ALIGN(0x00001000);
 	idmap_dir = .;
-	.data.idmapd : {. += (5* (1 << 12));}/*Esto son 3 * 4kb necesito 1 pdu mas*/
+	.data.idmapd : {. += (3* (1 << 12));}/*Esto son 3 * 4kb necesito 1 pdu mas*/
 	. = ALIGN(0x00001000);
 	pg_dir = .;
-	.data.pgd : { . += (5 * (1 << 12)); }/*Esto son 3 * 4kb necesito 1 pdu mas*/
+	.data.pgd : { . += (4 * (1 << 12)); }/*Esto son 4 * 4kb necesito 1 pdu desc mas*/
 }

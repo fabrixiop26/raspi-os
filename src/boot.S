@@ -116,10 +116,14 @@ el1_entry:
 	.macro	create_table_entry, tbl, virt, shift, tmp1, tmp2
 	lsr	\tmp1, \virt, #\shift
 	and	\tmp1, \tmp1, #PTRS_PER_TABLE - 1			// table index
-	add	\tmp2, \tbl, #PAGE_SIZE					//nueva tabla contigua a la direccion
+	mov \tmp2, #PAGE_SIZE
+	lsl \tmp2, \tmp2, \tmp1  //Multiplico PAGE_SIZE * 2^(index)
+	add	\tmp2, \tbl, \tmp2				//nueva tabla contigua a la direccion
 	orr	\tmp2, \tmp2, #MM_TYPE_PAGE_TABLE	//al descriptor le ponemos 11 al final
 	str	\tmp2, [\tbl, \tmp1, lsl #3] // al indice se multiplica por 8 como ya que asi accedemos a la posicion correcta como en un arreglo
-	add	\tbl, \tbl, #PAGE_SIZE					// next level table page
+	mov \tmp2, #PAGE_SIZE
+	lsl \tmp2, \tmp2, \tmp1  //Multiplico PAGE_SIZE * 2^(index)
+	add	\tbl, \tbl, \tmp2					// next level table page
 	.endm
 
 	//Creada especifica para local peripherals exp es 3 y luego sera 4
@@ -191,13 +195,13 @@ __create_idmap:
 	mov x4, #1
 	create_table_entry_2 x0, x1, PUD_SHIFT, x2, x3, x4, x5
 	//x0 apunta al nuevo pmd
-	mov x1, #LOCAL_PERIPHERAL_BASE //fisical
+	mov x1, #LOCAL_PERIPHERAL_BASE //fisica
 	mov x2, #LOCAL_PERIPHERAL_BASE //va
 	//orr x2, x2, #(1 << 39)
 	ldr x3, =(LAST_LOCAL_PERIPHERAL)
 	mov x4, #0
 
-	create_block_map x0, x1, x2, x3, MMU_FLAGS, x4 */
+	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4 */
 
 	mov	x30, x29
 	ret
@@ -229,8 +233,23 @@ __create_page_tables:
 				//tbl, phys, start, end, flags, tmp1
 	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4
 
+	adrp x0, pg_dir
+	mov  x1, #VA_START
+	orr  x1, x1, #(1 << 30) //1 en PUD index
+	mov x2, #0
+	mov x3, #0
+	//Esto deberia crear el nuevo indice en PUD y la nueva en pmd
+	create_pgd_entry x0, x1, x2, x3
+	//obtengo la nueva PMD en x0
+	
+	mov 	x1, #LOCAL_PERIPHERAL_BASE
+	ldr     x2, =(VA_START + LOCAL_PERIPHERAL_BASE) //first va
+	ldr    x3, =(VA_START + LAST_LOCAL_PERIPHERAL - SECTION_SIZE)    // last virtual address
+	mov x4, #0
+	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4
+
 	/*Creando nueva entrada en PGD y nueva tabla PDU y PMD */
-	adrp	x0, pg_dir
+	/* adrp	x0, pg_dir
 	add    x0, x0, #VA_LOCAL_OFFSET
 	mov    x1, #VA_START //muevo la va inicial
 	orr    x1, x1, #(1 << 39) //le pongo 000000001 como indice de pgd
@@ -241,15 +260,15 @@ __create_page_tables:
 	create_table_entry_2 x0, x1, PGD_SHIFT, x2, x3, x4, x5
 	//x0 apunta a pdu, x1 le pongo en 1 ya para que ponga contiguo al pmd
 	mov x4, #1 
-	create_table_entry_2 x0, x1, PUD_SHIFT, x2, x3, x4, x5
+	create_table_entry_2 x0, x1, PUD_SHIFT, x2, x3, x4, x5 */
 	//x0 apunta al nuevo pmd
 
 	/* Mapear Local Peripherals */
-	mov 	x1, #LOCAL_PERIPHERAL_BASE
+	/* mov 	x1, #LOCAL_PERIPHERAL_BASE
 	ldr     x2, =(VA_START + LOCAL_PERIPHERAL_BASE) //first va
 	ldr    x3, =(VA_START + LAST_LOCAL_PERIPHERAL - SECTION_SIZE)    // last virtual address
 	mov x4, #0
-	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4
+	create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4 */
 
 	//Crear una nueva pdu y luego llenarla con 0x4000000-0x80000000
 	//cambiar el linker para esto y el idmap
