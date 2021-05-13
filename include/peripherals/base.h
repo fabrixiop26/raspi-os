@@ -15,7 +15,7 @@
 //Direccion de perifericos locales
 //creo toca cambiar por el VA
 #define LOCAL_PERIPHERAL_BASE 0x40000000
-#define EXTRA_BYTES             0x200000
+#define EXTRA_BYTES             0x200000 //maximo valor es 0x40000000
 #define LAST_LOCAL_PERIPHERAL (LOCAL_PERIPHERAL_BASE + EXTRA_BYTES)
 #define PERIPHERAL_BASE		(VA_START + LOCAL_PERIPHERAL_BASE)
 

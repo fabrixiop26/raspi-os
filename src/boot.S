@@ -33,9 +33,6 @@ master:
 	ldr	x0, =HCR_VALUE
 	msr	hcr_el2, x0
 
-	/* ldr	x0, =SCR_VALUE
-	msr	scr_el2, x0 */
-
 	/* mrs	x0, hcr_el2
 	orr	x0, x0, #(1<<31) // AArch64
 	msr	hcr_el2, x0 // SWIO hardwired on Pi3 */
@@ -51,8 +48,8 @@ master:
 
 el3:
 
-	/* ldr	x0, =HCR_VALUE
-	msr	hcr_el2, x0 */
+	ldr	x0, =HCR_VALUE
+	msr	hcr_el2, x0
 
 	ldr	x0, =SCR_VALUE
 	msr	scr_el3, x0

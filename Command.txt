@@ -5,10 +5,16 @@ qemu-system-aarch64 -m 1024 -M raspi3 -serial stdio -kernel build/kernel8.elf
 #Con uart0 y .img
 qemu-system-aarch64 -m 1024 -M raspi3 -serial stdio -kernel kernel8.img
 
+#arvg
+http://www.crasseux.com/books/ctutorial/argc-and-argv.html#:~:text=c%20are%20all%20arguments%20to%20the%20gcc%20command.&text=The%20name%20of%20the%20variable,one%2Ddimensional%20array%20of%20strings.
+#strings
+
+
+
 
 #Framebuffers tutorials
 https://github.com/dwelch67/raspberrypi/blob/master/video01/video01.c
-https://github.com/brianwiddas/pi-baremetal/blob/master/framebuffer.c
+https://github.com/brianwiddas/pi-baremetal/blob/master/framebuffer.c //utils de mem
 https://github.com/PeterLemon/RaspberryPi/blob/master/HelloWorld/CPU/kernel8.asm
 https://github.com/BrianSidebotham/arm-tutorial-rpi/blob/master/part-5/armc-014/armc-014.c
 
