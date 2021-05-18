@@ -24,7 +24,6 @@ void loop(char* str)
 void user_process() 
 {
 	call_sys_write("User process \n\r");
-	//put32(TIMER_CTRL, ((1<<28) | interval2));
 	int pid = call_sys_fork();
 	if (pid < 0) {
 		call_sys_write("Error during fork\n\r");
@@ -39,3 +38,12 @@ void user_process()
 	}
 	call_sys_exit();
 }
+
+//Es un ciclo infinito para correr commandos
+/* void user_process(){
+	while (1)
+	{
+		
+	}
+	
+} */

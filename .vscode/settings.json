@@ -20,6 +20,7 @@
         "fork.h": "c",
         "mailbox.h": "c",
         "user.h": "c",
-        "entry.h": "c"
+        "entry.h": "c",
+        "pictures.h": "c"
     }
 }

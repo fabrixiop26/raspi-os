@@ -55,6 +55,10 @@ extern int get_el ( void );
 extern void set_pgd(unsigned long pgd);
 extern unsigned long get_pgd();
 
+/**
+ * Obteiene el valor del registro sp
+ * @return sp register value
+*/
 extern int get_stack_pointer();
 
 #endif  /*_BOOT_H */
