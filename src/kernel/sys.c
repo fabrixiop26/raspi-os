@@ -2,7 +2,6 @@
 #include "printf.h"
 #include "kernel/scheduler.h"
 #include "mm.h"
-#include "utils.h"
 
 /**
  * \file sys.c
@@ -16,8 +15,8 @@ void sys_write(char * buf){
 
 //Crea un nuevo user thread
 //lo que retorna es pasado a x0 en ret_from_syscall
-int sys_fork(){
-	return copy_process(0, 0, 0);
+int sys_fork(int priority){
+	return copy_process(0, 0, 0, priority);
 }
 
 void sys_exit(){

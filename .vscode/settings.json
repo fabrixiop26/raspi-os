@@ -21,6 +21,11 @@
         "mailbox.h": "c",
         "user.h": "c",
         "entry.h": "c",
-        "pictures.h": "c"
+        "pictures.h": "c",
+        "cmd.h": "c",
+        "ugui.h": "c",
+        "user_sys.h": "c",
+        "algorithm": "c",
+        "list": "c"
     }
 }

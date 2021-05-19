@@ -2,7 +2,7 @@
 #define	_USER_SYS_H
 
 void call_sys_write(char * buf);
-int call_sys_fork();
+int call_sys_fork(int priority);
 void call_sys_exit();
 
 extern void user_delay ( unsigned long);

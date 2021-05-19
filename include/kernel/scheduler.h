@@ -121,9 +121,6 @@ struct task_struct {
 	struct mm_struct mm;
 	struct task_struct *next_task;
 };
-
-
-extern void sched_init(void);
 /**
  * Ejecuta el algoritmo para planificar los procesos.
 */

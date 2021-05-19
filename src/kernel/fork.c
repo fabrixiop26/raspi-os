@@ -6,7 +6,7 @@
 #include "utils.h"
 
 //no crea cambios de contexto solo prepara el nuevo proceso
-int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
+int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, int priority)
 {
 	//Evitamos que el scheduler nos saque de aqui y asignamos su espacio de memoria al nuevo proceso que se usara como su stack
 	preempt_disable();
@@ -35,7 +35,7 @@ int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
 
 	p->flags = clone_flags;
 	//Asignamos la prioridad indicada
-	p->priority = current->priority;
+	p->priority = priority;
 	p->state = TASK_RUNNING;
 	//Asignamos el numero de quantums del nuevo proceso basado en la prioridad
 	//Mayor prioridad = mayor tiempo en cpu

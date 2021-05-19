@@ -1,6 +1,3 @@
-#include <stddef.h>
-#include <stdint.h>
-
 #include "drivers/uart.h"
 #include "drivers/irq.h"
 #include "printf.h"
@@ -20,6 +17,12 @@
  * \brief Funciones principales del kernel
  */
 static unsigned int semaphore = 0; ///< variable comun entre cpus para control*/
+
+int ready = 1;
+
+void changeState(){
+    ready = 0;
+}
 
 //Creo el proceso en el kernel y el mismo se encarga de pasarme a user mode
 //Se devuelve a la funcion que lo llamo
@@ -91,7 +94,6 @@ void UserDrawPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
 void window_callback(UG_MESSAGE *msg)
 {
 }
-
 UG_GUI gui;
 UG_WINDOW main_window;
 UG_IMAGE samir_pic;
@@ -131,12 +133,22 @@ UG_BMP un_bpm = {
     BMP_RGB565};
 UG_TEXTBOX textbox;
 UG_TEXTBOX textbox_os;
-
 //Maximo 4 imagenes y un texto
 UG_OBJECT obj_buff_wnd[7];
 
 void init_console()
 {
+
+    UG_RESULT hide_res = UG_WindowHide(&main_window);
+    printf("Pantalla oculta %d\r\n", hide_res);
+    UG_Update();
+
+    UG_FillScreen(C_BLACK);
+
+    UG_Update();
+
+    delay(2000);
+
     UG_FontSelect(&FONT_16X26);
     UG_SetForecolor(C_YELLOW);
     UG_PutString(136, 0, "Max Ventas OS");
@@ -180,8 +192,29 @@ void showPictures()
     UG_Update();
 }
 
-void showInitWindow(){
-     //Preparar ventana
+void showWindow()
+{
+
+    UG_FillScreen(C_BLACK);
+    wait_msec(10000);
+    UG_WindowShow(&main_window);
+    UG_Update();
+
+    //Preparo la consola inicial
+    UG_ConsoleSetArea(0, 240, 480, 320);
+    UG_SetForecolor(C_WHITE);
+    UG_FontSelect(&FONT_10X16);
+    UG_ConsoleSetForecolor(C_WHITE);
+    UG_ConsolePutString(">");
+}
+
+void showInitWindow()
+{
+
+    UG_FillScreen(C_BLACK);
+    UG_Update();
+    wait_msec(10000);
+    //Preparar ventana
     UG_WindowCreate(&main_window, obj_buff_wnd, 7, window_callback);
     UG_WindowSetTitleTextFont(&main_window, &FONT_16X26);
     UG_WindowSetTitleText(&main_window, "Max Ventas OS");
@@ -218,6 +251,8 @@ void showInitWindow(){
     UG_FontSelect(&FONT_10X16);
     UG_ConsoleSetForecolor(C_WHITE);
     UG_ConsolePutString(">");
+
+    UG_Update();
 }
 
 /**
@@ -244,7 +279,9 @@ void kernel_main()
     showInitWindow();
     //clock_rates();
 
-    int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0);
+    while(ready);
+
+    int res = copy_process(PF_KTHREAD, (unsigned long)&kernel_process, 0, 1);
     if (res < 0)
     {
         printf("Error while starting kernel process");

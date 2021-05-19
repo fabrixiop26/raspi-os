@@ -1,5 +1,5 @@
-#ifndef	_BOOT_H
-#define	_BOOT_H
+#ifndef _BOOT_H
+#define _BOOT_H
 
 /**
 * \file utils.h
@@ -10,11 +10,12 @@
 //TODO: esto se puede implementar en C asi que debo descubrir primero como
 //uint32_t el problema es el delay con su ams volatile
 
+
 /**
 *Wait for an amount of cpu cycles.
 *@param delay Cantidad de ciclos a esperar.
 */
-extern void delay ( unsigned long delay);
+extern void delay(unsigned long delay);
 
 /**
  * Espera N microsegundos. Usando el System Timer
@@ -33,19 +34,19 @@ unsigned long get_system_timer();
 *@param reg Direccion de memoria.
 *@param data El valor a guardar
 */
-extern void put32 ( unsigned long reg, unsigned int data);
+extern void put32(unsigned long reg, unsigned int data);
 /**
 *Wait for an amount of cpu cycles.
 *@param reg Direccion de memoria.
 *@return El valor del registro
 */
-extern unsigned int get32 ( unsigned long reg);
+extern unsigned int get32(unsigned long reg);
 
 /**
  * Obtiene el nivel de exepcion en el que nos encontramos.
  * @return El nivel de expecion 
 */
-extern int get_el ( void );
+extern int get_el(void);
 
 /**
  * Obtiene el valor del stack pointer.
@@ -61,4 +62,14 @@ extern unsigned long get_pgd();
 */
 extern int get_stack_pointer();
 
-#endif  /*_BOOT_H */
+int strcmp(char *w1, char *w2);
+int starts_with(char *w1, char *w2, int len);
+
+void init_console();
+void show_tasks();
+void showWindow();
+void changeState();
+void setWord1(char w[]);
+void setWord2(char w[]);
+
+#endif /*_BOOT_H */
