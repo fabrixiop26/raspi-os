@@ -147,7 +147,7 @@ void init_console()
 
     UG_Update();
 
-    delay(2000);
+    delay(200000);
 
     UG_FontSelect(&FONT_16X26);
     UG_SetForecolor(C_YELLOW);

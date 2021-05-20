@@ -50,10 +50,10 @@ void parse_first_command(char *cmdbuff)
         show_tasks();
     }
 
-    /*  if(strcmp(cmd, "about") == 0){
+     if(strcmp(cmdbuff, "about") == 0){
         //Se muestra sobre nosotros
         showWindow();
-    } */
+    }
 
     if (starts_with(cmdbuff, "start",5) == 1)
     {
