@@ -1,9 +1,10 @@
-#include "utils.h"
 #include "peripherals/uart.h"
 #include "peripherals/gpio.h"
 #include "printf.h"
 #include "drivers/framebuffer.h"
 #include "ugui.h"
+#include "kernel/cmd.h"
+#include "utils.h"
 
 /* typedef struct point {
 	int x;
@@ -18,7 +19,6 @@ const char charHeigth = 16;
 const char lineHeight = charHeigth + 1;
 const char separation = charWidth + 1;
 int zoom = 1;
-
 char cmd[256] = {0};
 int cChar = 0;
 
@@ -83,10 +83,12 @@ void handle_irq_uart()
 	//TODO: hay un bug aqui que pone el cursor en otra linea despues de dar enter. quiza sea el local timer interrupt que interfiere
 	if (c == '\r')
 	{
-		uart_send('\n');
+		//uart_send('\n');
 		//Esto se volvera line height
+		//El \n lo agrego a cmd
 		y += lineHeight * zoom;
 		x = 0;
+		parse_first_command(cmd);
 		for(int i = 0; i < cChar; i++){
 			cmd[i] = 0;
 		}
@@ -100,7 +102,7 @@ void handle_irq_uart()
 		//Esto puede ser un valor no necesario de la fuente
 		//como espaciado
 		x += separation * zoom;
-		uart_send(c);
+		//uart_send(c);
 		cmd[cChar++] = c;
 		UG_ConsolePutChar(c);
 	}

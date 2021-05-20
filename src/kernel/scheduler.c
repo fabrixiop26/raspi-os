@@ -31,16 +31,19 @@ void _schedule(void)
 {
 	//Esta funcion es una seccion critica y no debe ser interrumpida
 	preempt_disable();
-	int next,c,i;
-	struct task_struct * p, *next_task;
+	int next, c, i;
+	struct task_struct *p, *next_task;
 	//Como estamos en una sola cpu la unica forma de cambiar el estado de un proceso es mediante un interrupt. ya que con que exista una sola el segundo for loop incrementa su contador asi que tras la primera interacion del while el p->counter sera minimo de 0
-	while (1) {
+	while (1)
+	{
 		c = -1;
 		next = 0;
 		i = 0;
-		for (p = initial_task; p; p = p->next_task){
+		for (p = initial_task; p; p = p->next_task)
+		{
 			//p = task[i];   sistema estatico
-			if (p && p->state == TASK_RUNNING && p->counter > c) {
+			if (p && p->state == TASK_RUNNING && p->counter > c)
+			{
 				c = p->counter;
 				next_task = p;
 				next = i;
@@ -48,14 +51,17 @@ void _schedule(void)
 			i++; //Para debug control
 		}
 		//En caso de que sea 0 no se ejecuta ya que termino su tiempo y de ser mayor a 1 entonces este sera el proceso a ejecutar. Si no hay ningun task next = 0 y me ejecuto
-		if (c) {
+		if (c)
+		{
 			break;
 		}
 
 		//Si no hay ningun candidato entonces cada taria se le incrementa su counter: Entre mas pasen el counter incrementa pero nunca mas que 2 * priority
-		for (p = initial_task; p; p = p->next_task) {
+		for (p = initial_task; p; p = p->next_task)
+		{
 			//p = task[i]; sistema estatico
-			if (p) {
+			if (p)
+			{
 				p->counter = (p->counter >> 1) + p->priority;
 			}
 		}
@@ -74,13 +80,13 @@ void schedule(void)
 	_schedule();
 }
 
-void switch_to(struct task_struct * next) 
+void switch_to(struct task_struct *next)
 {
-	
-	if (current == next) 
+
+	if (current == next)
 		return;
 	//Si no es la misma pued guardamos la actual como la anterior y la actual sera la siguiente
-	struct task_struct * prev = current;
+	struct task_struct *prev = current;
 	current = next;
 	/* printf("\n\r\n\r######## - Task switch - #########\r\n");
 	printf("Current Task -> ");
@@ -94,39 +100,57 @@ void switch_to(struct task_struct * next)
 	cpu_switch_to(prev, next);
 }
 
-void schedule_tail(void) {
+void schedule_tail(void)
+{
 	preempt_enable();
 }
 
-void print_task_info(struct task_struct * t, int pid){
+void print_task_info(struct task_struct *t, int pid)
+{
 	printf("PID: %d, Counter: %d, Priority: %d, Preempt_count: %d, Sp: 0x%08x \r\n", pid, t->counter, t->priority, t->preempt_count, t->cpu_context.sp);
 }
-
 
 void timer_tick()
 {
 	--current->counter; //Disminuyo el counter
 	//En caso de que aun no sea 0 de que este en seccion critica no hago nada
-	if (current->counter>0 || current->preempt_count >0) {
+	if (current->counter > 0 || current->preempt_count > 0)
+	{
 		return;
 	}
 	//me aseguro que el counter sea 0  y vuelvo a programar el scheduler
-	current->counter=0;
+	current->counter = 0;
 	//Como estamos en un interrupt al llegar aqui se habilitan para poder luego planificar
 	enable_irq();
 	_schedule();
 	disable_irq();
 }
 
-void exit_process(){
+void exit_process()
+{
 	preempt_disable();
 	struct task_struct *p;
-	for (p = initial_task; p; p = p->next_task) {
-		if(p == current){
+	for (p = initial_task; p; p = p->next_task)
+	{
+		if (p == current)
+		{
 			p->state = TASK_ZOMBIE;
 			break;
 		}
 	}
 	preempt_enable();
 	schedule();
+}
+
+void show_tasks()
+{
+	struct task_struct *p;
+	int i = 0;
+	for (p = initial_task; p; p = p->next_task)
+	{
+		print_task_info(p, i);
+		i++;
+	}
+
+	printf("====================\r\n");
 }

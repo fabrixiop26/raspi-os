@@ -1,7 +1,6 @@
 #include "peripherals/base.h"
 #include "drivers/mailbox.h"
 #include "terminal.h"
-#include "utils.h"
 #include "printf.h"
 #include "drawutils.h"
 

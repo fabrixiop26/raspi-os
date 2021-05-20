@@ -24,7 +24,7 @@
  @param fn La funcion a copiar.
  @param arg Los argumentos de la funcion.
 */
-int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg);
+int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, int priority);
 /**
  * Movemos la ejecucion a modo usuario.
  * @param start Donde empezar.

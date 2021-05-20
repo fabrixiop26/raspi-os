@@ -1,8 +1,7 @@
-#include "utils.h"
-#include "printf.h"
 #include "peripherals/timer.h"
 #include "kernel/scheduler.h"
 #include "drivers/timer.h"
+#include "utils.h"
 
 //20M (c.a 1s)
 const unsigned int interval = 200000;
